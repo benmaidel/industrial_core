@@ -182,9 +182,9 @@ bool RobotStatus::unload(industrial::byte_array::ByteArray *buffer)
   bool rtn = false;
 
   LOG_COMM("Executing robot status unload");
-  if (buffer->unload(this->motion_possible_) && buffer->unload(this->mode_) && buffer->unload(this->in_motion_)
-      && buffer->unload(this->in_error_) && buffer->unload(this->error_code_) && buffer->unload(this->e_stopped_)
-      && buffer->unload(this->drives_powered_))
+  if (buffer->unload(this->error_code_) && buffer->unload(this->in_error_) && buffer->unload(this->in_motion_) 
+    && buffer->unload(this->motion_possible_) && buffer->unload(this->drives_powered_) && buffer->unload(this->e_stopped_)
+    && buffer->unload(this->mode_))
   {
 
     rtn = true;
