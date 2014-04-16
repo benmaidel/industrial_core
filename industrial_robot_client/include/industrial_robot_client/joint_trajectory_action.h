@@ -40,6 +40,8 @@
 #include <control_msgs/FollowJointTrajectoryFeedback.h>
 #include <industrial_msgs/RobotStatus.h>
 
+#include <boost/circular_buffer.hpp>
+
 namespace industrial_robot_client
 {
 namespace joint_trajectory_action
@@ -66,7 +68,7 @@ public:
      */
     void run() { ros::spin(); }
 
-private:
+public:
 
   typedef actionlib::ActionServer<control_msgs::FollowJointTrajectoryAction> JointTractoryActionServer;
 
@@ -107,6 +109,11 @@ private:
    * \brief Indicates action has an active goal
    */
   bool has_active_goal_;
+
+  /**
+   * \brief Indicates action has an active goal
+   */
+  bool robot_parts_in_motion_;  
 
   /**
    * \brief Cache of the current active goal
@@ -150,6 +157,10 @@ private:
    */
   bool trajectory_state_recvd_;
 
+  bool last_in_motion_;
+
+  boost::circular_buffer<bool> in_motion_buffer_;
+
   /**
    * \brief Cache of the last subscribed status message
    */
@@ -174,7 +185,7 @@ private:
    * \param gh goal handle
    *
    */
-  void goalCB(JointTractoryActionServer::GoalHandle & gh);
+  virtual void goalCB(JointTractoryActionServer::GoalHandle & gh);
 
   /**
    * \brief Action server cancel callback method
@@ -222,6 +233,8 @@ private:
    */
   bool withinGoalConstraints(const control_msgs::FollowJointTrajectoryFeedbackConstPtr &msg,
                              const trajectory_msgs::JointTrajectory & traj);
+
+  bool getFilteredInMotion();
 };
 
 } //joint_trajectory_action

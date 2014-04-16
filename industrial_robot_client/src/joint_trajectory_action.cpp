@@ -44,7 +44,8 @@ const double JointTrajectoryAction::DEFAULT_GOAL_THRESHOLD_ = 0.01;
 
 JointTrajectoryAction::JointTrajectoryAction() :
     action_server_(node_, "joint_trajectory_action", boost::bind(&JointTrajectoryAction::goalCB, this, _1),
-                   boost::bind(&JointTrajectoryAction::cancelCB, this, _1), false), has_active_goal_(false)
+                   boost::bind(&JointTrajectoryAction::cancelCB, this, _1), false), has_active_goal_(false),
+                   last_in_motion_(false), in_motion_buffer_(4)
 {
   ros::NodeHandle pn("~");
 
@@ -73,6 +74,15 @@ JointTrajectoryAction::~JointTrajectoryAction()
 void JointTrajectoryAction::robotStatusCB(const industrial_msgs::RobotStatusConstPtr &msg)
 {
   last_robot_status_ = msg; //caching robot status for later use.
+  in_motion_buffer_.push_back((bool)(last_robot_status_->in_motion.val));
+}
+
+bool JointTrajectoryAction::getFilteredInMotion()
+{
+  bool ret = in_motion_buffer_[0];
+  for(int i = 1; i < in_motion_buffer_.size(); i++)
+    ret |= in_motion_buffer_[i];
+  return ret;
 }
 
 void JointTrajectoryAction::watchdog(const ros::TimerEvent &e)
@@ -129,7 +139,7 @@ void JointTrajectoryAction::goalCB(JointTractoryActionServer::GoalHandle & gh)
       }
 
       // Sends the trajectory along to the controller
-      if (withinGoalConstraints(last_trajectory_state_, gh.getGoal()->trajectory))
+      /*if (withinGoalConstraints(last_trajectory_state_, gh.getGoal()->trajectory))
       {
 
         ROS_INFO_STREAM("Already within goal constraints, setting goal succeeded");
@@ -139,7 +149,7 @@ void JointTrajectoryAction::goalCB(JointTractoryActionServer::GoalHandle & gh)
 
       }
       else
-      {
+      {*/
         gh.setAccepted();
         active_goal_ = gh;
         has_active_goal_ = true;
@@ -148,7 +158,7 @@ void JointTrajectoryAction::goalCB(JointTractoryActionServer::GoalHandle & gh)
 
         current_traj_ = active_goal_.getGoal()->trajectory;
         pub_trajectory_command_.publish(current_traj_);
-      }
+      //}
     }
     else
     {
@@ -229,7 +239,10 @@ void JointTrajectoryAction::controllerStateCB(const control_msgs::FollowJointTra
   // Checks that we have ended inside the goal constraints and has motion stopped
 
   ROS_DEBUG("Checking goal constraints");
-  if (withinGoalConstraints(last_trajectory_state_, current_traj_))
+  if(getFilteredInMotion() == industrial_msgs::TriState::TRUE && last_in_motion_ == false)
+    last_in_motion_ = true;
+
+  if (withinGoalConstraints(last_trajectory_state_, current_traj_) && last_in_motion_)
   {
     if (last_robot_status_)
     {
@@ -237,11 +250,12 @@ void JointTrajectoryAction::controllerStateCB(const control_msgs::FollowJointTra
       // be moving.  The current robot driver calls a motion stop if it receives
       // a new trajectory while it is still moving.  If the driver is not publishing
       // the motion state (i.e. old driver), this will still work, but it warns you.
-      if (last_robot_status_->in_motion.val == industrial_msgs::TriState::FALSE)
+      if (getFilteredInMotion() == industrial_msgs::TriState::FALSE)
       {
         ROS_INFO("Inside goal constraints, stopped moving, return success for action");
         active_goal_.setSucceeded();
         has_active_goal_ = false;
+        last_in_motion_ = false;
       }
       else if (last_robot_status_->in_motion.val == industrial_msgs::TriState::UNKNOWN)
       {
@@ -249,6 +263,7 @@ void JointTrajectoryAction::controllerStateCB(const control_msgs::FollowJointTra
         ROS_WARN("Robot status in motion unknown, the robot driver node and controller code should be updated");
         active_goal_.setSucceeded();
         has_active_goal_ = false;
+        last_in_motion_ = false;
       }
       else
       {
@@ -274,6 +289,7 @@ void JointTrajectoryAction::abortGoal()
   // Marks the current goal as aborted.
   active_goal_.setAborted();
   has_active_goal_ = false;
+  last_in_motion_ = false;
 }
 
 bool JointTrajectoryAction::withinGoalConstraints(const control_msgs::FollowJointTrajectoryFeedbackConstPtr &msg,
