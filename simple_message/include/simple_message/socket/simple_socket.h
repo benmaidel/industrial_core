@@ -193,7 +193,7 @@ protected:
    * \brief maximum size of buffer for receiving data (fixed memory size used
    * in order to avoid dynamic memory allocation)
    */
-  static const int MAX_BUFFER_SIZE = 1024;
+  static const int MAX_BUFFER_SIZE = 8192;
 
   /**
    * \brief socket ready polling timeout (ms)
