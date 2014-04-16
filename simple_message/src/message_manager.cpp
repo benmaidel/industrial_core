@@ -205,6 +205,8 @@ bool MessageManager::add(MessageHandler * handler, bool allow_replace)
 
   if (NULL != handler)
   {
+    if(handler->getMsgType() != StandardMsgTypes::INVALID)
+    {
     // If get handler returns -1 then a hander for the message type
     // does not exist, and a new one should be added
     idx = getHandlerIdx(handler->getMsgType());
@@ -225,12 +227,18 @@ bool MessageManager::add(MessageHandler * handler, bool allow_replace)
     }
     else if (allow_replace)
     {
+        ROS_WARN("Replaced Handler");
       this->handlers_[idx] = handler;
     }
     else
     {
       LOG_ERROR("Failed to add handler for: %d, handler already exists", handler->getMsgType());
       rtn = false;
+      }
+    }
+    else
+    {
+      LOG_WARN("Handler with invalid message type not added");
     }
   }
   else
