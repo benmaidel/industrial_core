@@ -337,7 +337,7 @@ private:
    * be larger than this.  Ideally this value would be relatively small as passing
    * large amounts of data is not desired.
    */
-  static const industrial::shared_types::shared_int MAX_SIZE = 8192;
+  static const industrial::shared_types::shared_int MAX_SIZE = 16384;
 
   /**
    * \brief internal data buffer
