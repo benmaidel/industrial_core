@@ -68,7 +68,7 @@ public:
      */
     void run() { ros::spin(); }
 
-public:
+protected:
 
   typedef actionlib::ActionServer<control_msgs::FollowJointTrajectoryAction> JointTractoryActionServer;
 

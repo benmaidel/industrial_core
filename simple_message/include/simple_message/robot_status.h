@@ -276,4 +276,4 @@ industrial::shared_types::shared_int error_code_;
 }
 }
 
-#endif /* JOINT_TRAJ_PT_H */
+#endif /* ROBOT STATUS */
