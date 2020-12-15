@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import socket
 import sys
@@ -54,7 +54,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Bind the socket to the port
 server_address = ('localhost', 11002)
-print >>sys.stderr, 'starting up on %s port %s' % server_address
+print('starting up on {0[0]} port {0[1]}'.format(server_address))
 sock.connect(server_address)
 
 # Listen for incoming connections
