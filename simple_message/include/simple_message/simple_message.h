@@ -73,6 +73,8 @@ namespace StandardMsgTypes
  JOINT_TRAJ_PT_FULL = 14,  // Joint trajectory point message (all message fields)
  JOINT_FEEDBACK = 15,      // Feedback of joint pos/vel/accel
 
+ TEST_MSG = 999,
+
  // Begin vendor specific message types (only define the beginning enum value,
  // specific enum values should be defined locally, within in the range reserved
  // here.  Each vendor can reserve up 100 types

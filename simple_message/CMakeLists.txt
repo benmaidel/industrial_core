@@ -42,7 +42,8 @@ set(SRC_FILES src/byte_array.cpp
 	src/messages/joint_feedback_message.cpp
 	src/messages/joint_traj_pt_message.cpp
 	src/messages/joint_traj_pt_full_message.cpp
-	src/messages/robot_status_message.cpp
+  src/messages/robot_status_message.cpp
+  src/messages/test_message.cpp
 
 	src/simple_comms_fault_handler.cpp)
 					

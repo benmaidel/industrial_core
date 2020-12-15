@@ -129,7 +129,7 @@ namespace StandardSocketPorts
 {
 enum StandardSocketPort
 {
-  MOTION = 11000, SYSTEM = 11001, STATE = 11002, IO = 11003
+  MOTION = 11000, SYSTEM = 11001, STATE = 11002, IO = 11003, TEST = 1000,
 };
 }
 typedef StandardSocketPorts::StandardSocketPort StandardSocketPort;

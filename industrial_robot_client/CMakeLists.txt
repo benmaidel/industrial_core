@@ -18,6 +18,8 @@ set(SRC_FILES src/joint_relay_handler.cpp
               src/joint_trajectory_streamer.cpp
               src/joint_trajectory_interface.cpp
               src/robot_state_interface.cpp
+              src/test_msg_interface.cpp
+              src/test_msg_relay_handler.cpp
               src/utils.cpp)
 
 # NOTE: The libraries generated this package are not included in the catkin_package
@@ -85,6 +87,13 @@ target_link_libraries(robot_state
   simple_message
   ${catkin_LIBRARIES})
 
+add_executable(test_state
+  src/generic_test_msg_node.cpp)
+target_link_libraries(test_state 
+  industrial_robot_client
+  simple_message
+  ${catkin_LIBRARIES})
+
 add_executable(motion_streaming_interface
   src/generic_joint_streamer_node.cpp)
 target_link_libraries(motion_streaming_interface 
@@ -107,6 +116,13 @@ add_executable(robot_state_bswap
   src/generic_robot_state_node.cpp)
 target_link_libraries(robot_state_bswap 
   industrial_robot_client_bswap 
+  simple_message_bswap
+  ${catkin_LIBRARIES})
+
+add_executable(test_state_bswap
+  src/generic_test_msg_node.cpp)
+target_link_libraries(test_state_bswap 
+  industrial_robot_client
   simple_message_bswap
   ${catkin_LIBRARIES})
 
