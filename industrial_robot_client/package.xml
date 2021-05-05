@@ -26,6 +26,10 @@
   <depend>urdf</depend>
   <depend>industrial_msgs</depend>
   <depend>industrial_utils</depend>
+ 
   <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>rviz</exec_depend>
+ 
+  <test_depend>roslaunch</test_depend>
   <test_depend>rosunit</test_depend>
 </package>

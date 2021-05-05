@@ -4,7 +4,7 @@ project(industrial_trajectory_filters)
 
 add_compile_options(-std=c++11)
 
-find_package(catkin REQUIRED COMPONENTS moveit_ros_planning trajectory_msgs)
+find_package(catkin REQUIRED COMPONENTS moveit_core moveit_ros_planning pluginlib trajectory_msgs)
 
 catkin_package(
     CATKIN_DEPENDS moveit_ros_planning trajectory_msgs
@@ -18,10 +18,10 @@ include_directories(include
 
 
 add_library(${PROJECT_NAME} 
-  src/n_point_filter.cpp 
-  src/uniform_sample_filter.cpp
   src/add_smoothing_filter.cpp
+  src/n_point_filter.cpp 
   src/smoothing_trajectory_filter.cpp
+  src/uniform_sample_filter.cpp
 )
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
 
