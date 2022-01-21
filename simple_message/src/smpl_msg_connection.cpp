@@ -59,12 +59,18 @@ bool SmplMsgConnection::sendMsg(SimpleMessage & message)
   ByteArray sendBuffer;
   ByteArray msgData;
 
+  //Load the start tag to the byte array
+  sendBuffer.load((void *)&message.START_TAG, 4);
+
   if (message.validateMessage())
   {
     message.toByteArray(msgData);
     sendBuffer.load((int)msgData.getBufferSize());
     sendBuffer.load(msgData);
     rtn = this->sendBytes(sendBuffer);
+
+    //Attach the end tag to the end of the byte array
+    sendBuffer.load((void *)&message.END_TAG, 4);
   }
   else
   {
@@ -76,46 +82,69 @@ return rtn;
 }
 
 
-bool SmplMsgConnection::receiveMsg(SimpleMessage & message)
+bool SmplMsgConnection::receiveMsg(SimpleMessage &message)
 {
-  ByteArray lengthBuffer;
+  ByteArray tagBuffer;
+  ByteArray headerBuffer;
   ByteArray msgBuffer;
   int length;
 
   bool rtn = false;
 
-
-  rtn = this->receiveBytes(lengthBuffer, message.getLengthSize());
+  // receive the start tag
+  rtn = this->receiveBytes(tagBuffer, 4);
 
   if (rtn)
   {
-    rtn = lengthBuffer.unload(length);
-    LOG_COMM("Message length: %d", length);
+    //validate the start tag
+    if(strcmp(message.START_TAG, tagBuffer.getRawDataPtr()) != 0)
+    {
+      LOG_ERROR("Received message did not start with the correct start tag. Expected: %s, Received: %s", message.START_TAG, tagBuffer.getRawDataPtr());
+      return false;
+    }
 
+    //receive the header
+    rtn = this->receiveBytes(headerBuffer, message.getHeaderSize());
     if (rtn)
     {
-      rtn = this->receiveBytes(msgBuffer, length);
-
+      rtn = message.init(headerBuffer);
       if (rtn)
       {
-        rtn = message.init(msgBuffer);
+        rtn = this->receiveBytes(msgBuffer, message.getPayloadLength());
+        if (rtn)
+        {
+          message.setData(msgBuffer);
+
+          //receive the end tag and validate it
+          tagBuffer.init();
+          rtn = this->receiveBytes(tagBuffer, 4);
+          if(strcmp(message.END_TAG, tagBuffer.getRawDataPtr()) != 0)
+          {
+            LOG_ERROR("Received message did not end with the correct end tag. Expected: %s, Received: %s", message.END_TAG, tagBuffer.getRawDataPtr());
+            rtn = false;
+          }
+        }
+        else
+        {
+          LOG_ERROR("Failed to receive message payload");
+          rtn = false;
+        }
       }
       else
       {
-        LOG_ERROR("Failed to initialize message");
+        LOG_ERROR("Message header initialization failed");
         rtn = false;
       }
-
     }
     else
     {
-      LOG_ERROR("Failed to receive message");
+      LOG_ERROR("Failed to receive header");
       rtn = false;
     }
   }
   else
   {
-    LOG_ERROR("Failed to receive message length");
+    LOG_ERROR("Failed to receive start tag");
     rtn = false;
   }
 
@@ -125,7 +154,7 @@ bool SmplMsgConnection::receiveMsg(SimpleMessage & message)
 
 
 bool SmplMsgConnection::sendAndReceiveMsg(SimpleMessage & send, SimpleMessage & recv, bool verbose)
-{	
+{
   bool rtn = false;
   rtn = this->sendMsg(send);
   if (rtn)

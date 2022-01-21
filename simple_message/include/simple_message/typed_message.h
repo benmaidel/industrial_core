@@ -51,7 +51,7 @@ namespace typed_message
  *
  * This is an interface for a helper class that when implemented is used
  * to create simple messages of the various types (i.e. as defined by the
- * message type enumeration).  It also has constructors and initializers 
+ * message type enumeration).  It also has constructors and initializers
  * that can be used to create a typed message from a simple message.
  *
  * If the typed message does not support a particular simple message type
@@ -95,11 +95,11 @@ public:
    */
   virtual bool toRequest(industrial::simple_message::SimpleMessage & msg)
   {
-	  industrial::byte_array::ByteArray data;
-	  data.load(*this);
-	  return msg.init(this->getMessageType(),
-			  industrial::simple_message::CommTypes::SERVICE_REQUEST,
-			  industrial::simple_message::ReplyTypes::INVALID, data);
+    industrial::byte_array::ByteArray data;
+    data.load(*this);
+    return msg.init(this->getMessageType(), this->getVersionMajor(), this->getVersionMinor(),
+        industrial::simple_message::CommTypes::SERVICE_REQUEST,
+        industrial::simple_message::ReplyTypes::INVALID, data);
   }
 
   /**
@@ -108,13 +108,13 @@ public:
    * \return true if message successfully initialized, otherwise false
    */
   virtual bool toReply(industrial::simple_message::SimpleMessage & msg,
-		  industrial::simple_message::ReplyType reply)
+      industrial::simple_message::ReplyType reply)
   {
-	  industrial::byte_array::ByteArray data;
-	data.load(*this);
-	return msg.init(this->getMessageType(),
-			industrial::simple_message::CommTypes::SERVICE_REPLY,
-			reply, data);
+    industrial::byte_array::ByteArray data;
+  data.load(*this);
+  return msg.init(this->getMessageType(), this->getVersionMajor(), this->getVersionMinor(),
+      industrial::simple_message::CommTypes::SERVICE_REPLY,
+      reply, data);
   }
   /**
    * \brief creates a simple_message topic
@@ -123,11 +123,11 @@ public:
    */
   virtual bool toTopic(industrial::simple_message::SimpleMessage & msg)
   {
-	  industrial::byte_array::ByteArray data;
+    industrial::byte_array::ByteArray data;
     data.load(*this);
-    return msg.init(this->getMessageType(),
-    		industrial::simple_message::CommTypes::TOPIC,
-    		industrial::simple_message::ReplyTypes::INVALID, data);
+    return msg.init(this->getMessageType(), this->getVersionMajor(), this->getVersionMinor(),
+        industrial::simple_message::CommTypes::TOPIC,
+        industrial::simple_message::ReplyTypes::INVALID, data);
   }
   /**
    * \brief gets message type (enumeration)
@@ -138,15 +138,25 @@ public:
   {
     return message_type_;
   }
-  
+
   /**
    * \brief Gets the communication type of the message
-   * 
+   *
    * \return the value of the comm_type parameter (refer to simple_message::CommTypes::CommType)
    */
   int getCommType() const
   {
     return comm_type_;
+  }
+
+  uint8_t getVersionMajor() const
+  {
+    return version_major_;
+  }
+
+  uint8_t getVersionMinor() const
+  {
+    return version_minor_;
   }
 
 protected:
@@ -160,7 +170,7 @@ protected:
   {
     this->message_type_ = message_type;
   }
-  
+
   /**
    * \brief Sets the communication type of the message
    *
@@ -171,18 +181,32 @@ protected:
     this->comm_type_ = comm_type;
   }
 
+  void setVersionMajor(int version_major)
+  {
+    this->version_major_ = version_major;
+  }
+
+  void setVersionMinor(int version_minor)
+  {
+    this->version_minor_ = version_minor;
+  }
+
 private:
 
   /**
    * \brief Message type expected by callback
    */
 
-  int message_type_;
-    
+  uint16_t message_type_;
+
   /**
    * \brief Communications type (see simple_message::CommTypes::CommType)
    */
-  int comm_type_;
+  uint8_t comm_type_;
+
+  uint8_t version_major_;
+
+  uint8_t version_minor_;
 
 };
 

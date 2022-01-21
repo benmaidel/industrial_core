@@ -60,18 +60,21 @@ SimpleMessage::~SimpleMessage(void)
 
 
 
-bool SimpleMessage::init(int msgType, int commType, int replyCode)
+bool SimpleMessage::init(uint16_t msgType, uint8_t versionMajor, uint8_t versionMinor, uint8_t commType, uint8_t replyCode)
 {
   ByteArray data;
   data.init();
-  return this->init(msgType, commType, replyCode, data);
+  return this->init(msgType, versionMajor, versionMinor, commType, replyCode, data);
 }
 
-bool SimpleMessage::init(int msgType, int commType, int replyCode, ByteArray & data )
+bool SimpleMessage::init(uint16_t msgType, uint8_t versionMajor, uint8_t versionMinor, uint8_t commType, uint8_t replyCode,
+                      ByteArray & data )
 {
   LOG_COMM("SimpleMessage::init(type: %d, comm: %d, reply: %d, data[%d]...)",
             msgType, commType, replyCode, data.getBufferSize());
   this->setMessageType(msgType);
+  this->setVersionMajor(versionMajor);
+  this->setVersionMinor(versionMinor);
   this->setCommType(commType);
   this->setReplyCode(replyCode);
   this->data_.copyFrom(data);
@@ -81,25 +84,32 @@ bool SimpleMessage::init(int msgType, int commType, int replyCode, ByteArray & d
 
 bool SimpleMessage::init(ByteArray & msg)
 {
-  int dataSize = 0;
   bool rtn = false;
 
   if (msg.getBufferSize() >= this->getHeaderSize())
   {
     // Check to see if the message is larger than the standard header
     // If so, copy out the data portion.
-    if (msg.getBufferSize() > this->getHeaderSize())
-    {
-      dataSize = msg.getBufferSize() - this->getHeaderSize();
-      LOG_COMM("Unloading data portion of message: %d bytes", dataSize);
-      msg.unload(this->data_, dataSize);
-    }
     LOG_COMM("Unloading header data");
-    msg.unload(this->reply_code_);
-    msg.unload(this->comm_type_);
-    msg.unload(this->message_type_);
-    LOG_COMM("SimpleMessage::init(type: %d, comm: %d, reply: %d, data[%d]...)",
-              this->message_type_, this->comm_type_, this->reply_code_, this->data_.getBufferSize());
+    msg.unloadFront(this->payload_length_);
+    msg.unloadFront(this->message_type_);
+    msg.unloadFront((void *)this->message_string_.c_str(), MESSAGE_STRING_LENGTH * sizeof(char));
+    msg.unloadFront(this->version_major_);
+    msg.unloadFront(this->version_minor_);
+    msg.unloadFront(this->sequence_);
+    msg.unloadFront(this->timestamp_sec_);
+    msg.unloadFront(this->timestamp_nsec_);
+    msg.unloadFront(this->comm_type_);
+    msg.unloadFront(this->reply_code_);
+    LOG_COMM("SimpleMessage::init(msg_length: %d, msg_type: %d, version_major: %d, version_minor: %d, msg_comm: %d, msg_reply: %d, data[%d]...)",
+              this->payload_length_, this->message_type_, this->version_major_, this->version_minor_, this->comm_type_, this->reply_code_);
+
+    if (msg.getBufferSize() >= this->payload_length_)
+    {
+      LOG_COMM("Unloading data");
+      msg.unloadFront(this->data_, (int)this->payload_length_);
+    }
+
     rtn = this->validateMessage();
   }
   else
@@ -114,14 +124,20 @@ void SimpleMessage::toByteArray(ByteArray & msg)
 {
   msg.init();
 
-  msg.load(this->getMessageType());
+  msg.load((uint32_t)this->data_.getBufferSize());
+  msg.load((uint16_t)this->getMessageType());
+  msg.load((void *)this->message_string_.c_str(), MESSAGE_STRING_LENGTH * sizeof(char));
+  msg.load((uint8_t)this->getVersionMajor());
+  msg.load((uint8_t)this->getVersionMinor());
+  msg.load((uint16_t)this->getSequence());
+  msg.load((uint32_t)this->getTimestampSec());
+  msg.load((uint32_t)this->getTimestampNSec());
   msg.load(this->getCommType());
   msg.load(this->getReplyCode());
   if (this->data_.getBufferSize() > 0 )
   {
     msg.load(this->data_);
   }
-
 }
 
 
@@ -134,7 +150,7 @@ void SimpleMessage::setData( ByteArray & data)
 bool SimpleMessage::validateMessage()
 {
 
-  if ( StandardMsgTypes::INVALID == this->getMessageType())
+  if ( StandardMsgType::INVALID == this->getMessageType())
   {
     LOG_WARN("Invalid message type: %u", this->getMessageType());
     return false;
@@ -161,8 +177,5 @@ bool SimpleMessage::validateMessage()
   return true;
 }
 
-
-
-	
 } // namespace simple_message
 } // namespace industrial

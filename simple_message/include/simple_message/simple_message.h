@@ -35,13 +35,12 @@
 #ifndef FLATHEADERS
 #include "simple_message/simple_serialize.h"
 #include "simple_message/byte_array.h"
-#include "simple_message/shared_types.h"
 #else
 #include "simple_serialize.h"
 #include "byte_array.h"
-#include "shared_types.h"
 #endif
 
+#include <cstddef>
 
 namespace industrial
 {
@@ -63,7 +62,7 @@ namespace StandardMsgTypes
  //TODO: Keeping these message type for the time being.  Refactoring
  // the messages should remove the need for this message.
  JOINT_POSITION = 10,
- JOINT = 10, 
+ JOINT = 10,
  READ_INPUT = 20,
  WRITE_OUTPUT = 21,
 
@@ -121,7 +120,7 @@ typedef ReplyTypes::ReplyType ReplyType;
 
 /**
 * \brief This class defines a simple messaging protocol for communicating with an
-* industrial robot controller.  
+* industrial robot controller.
 *
 * The protocol meets the following requirements:
 *
@@ -152,7 +151,7 @@ typedef ReplyTypes::ReplyType ReplyType;
 *     and robot specific values)
 *   - int COMM_TYPE identified communications type (see CommTypes::CommType)
 *   - int REPLY CODE (service reply only) reply code (see ReplyTypes::ReplyType)
-* 
+*
 * - <BODY>
 *   - ByteArray DATA variable length data determined by message
 *     type and and communications type.
@@ -164,7 +163,7 @@ typedef ReplyTypes::ReplyType ReplyType;
 class SimpleMessage
 {
 
-  
+
 public:
   /**
    * \brief Constructs an empty message
@@ -175,104 +174,118 @@ public:
    * \brief Destructs a message
    */
 	~SimpleMessage(void);
-  /**
-   * \brief Initializes a fully populated simple message
-   *
-   * \param message type. Globally unique message ID (see StandardMsgType)
-   * \param communications types (see CommType)
-   * \param reply code(see ReplyType), only valide if comms type is a reply
-   * \param data payload for the message
-   *
-   * \return true if valid message created
-   */
-	bool init(int msgType, int commType, int replyCode,
-	          industrial::byte_array::ByteArray &data );
-            
-  /**
-   * \brief Initializes a simple message with an emtpy data payload
-   *
-   * \param message type. Globally unique message ID (see StandardMsgType)
-   * \param communications types (see CommType)
-   * \param reply code(see ReplyType), only valide if comms type is a reply
-   *
-   * \return true if valid message created
-   */
-  bool init(int msgType, int commType, int replyCode);
-  
-  /**
-   * \brief Initializes a simple message from a generic byte array.  The byte
-   * array is assumed to hold a valid message with a HEADER and data payload
-   *
-   * \param valid message (as bytes)
-   *
-   * \return true if valid message created
-   */
-  bool init(industrial::byte_array::ByteArray & msg);
 
-   /**
-   * \brief Populates a raw byte array with the message.  Any data stored in
-   * the passed in byte array is deleted
-   * 
-   * \param byte array to be populated
-   */
-  void toByteArray(industrial::byte_array::ByteArray & msg);
+  bool init(uint16_t msgType, uint8_t versionMajor, uint8_t versionMinor, uint8_t commType, uint8_t replyCode);
+
+	bool init(uint16_t msgType, uint8_t versionMajor, uint8_t versionMinor, uint8_t commType, uint8_t replyCode,
+          industrial::byte_array::ByteArray &data );
+
+  bool init(industrial::byte_array::ByteArray &msg);
+
+  void toByteArray(industrial::byte_array::ByteArray &msg);
 
   /**
    * \brief Gets size of message header in bytes(fixed)
    *
    * \return message header size
    */
-  static unsigned int getHeaderSize() { return SimpleMessage::HEADER_SIZE; };
-  
-   /**
-   * \brief Gets size of message length member in bytes (fixed)
-   *
-   * \return message header size
-   */
-  static unsigned int getLengthSize() { return SimpleMessage::LENGTH_SIZE; };
+  static uint32_t getHeaderSize() { return SimpleMessage::HEADER_SIZE; };
 
   /**
    * \brief Gets message type(see StandardMsgType)
    *
    * \return message type
    */
-	int getMessageType() {return this->message_type_;};
-  
+	uint16_t getMessageType() {return this->message_type_;};
+
+  /**
+   * \brief Gets message type(see StandardMsgType)
+   *
+   * \return message type
+   */
+	std::string getMessageString() {return this->message_string_;};
+
+
   /**
    * \brief Gets message type(see CommType)
    *
    * \return communications type
    */
-	int getCommType() {return this->comm_type_;};
-  
+	uint8_t getVersionMajor() {return this->version_major_;};
+
+  /**
+   * \brief Gets message type(see CommType)
+   *
+   * \return communications type
+   */
+	uint8_t getVersionMinor() {return this->version_minor_;};
+
+
+  /**
+   * \brief Gets message type(see CommType)
+   *
+   * \return communications type
+   */
+	uint8_t getSequence() {return this->sequence_;};
+
+  /**
+   * \brief Gets message type(see CommType)
+   *
+   * \return communications type
+   */
+	uint8_t getCommType() {return this->comm_type_;};
+
+  /**
+   * \brief Gets message type(see CommType)
+   *
+   * \return communications type
+   */
+	uint8_t getTimestampSec() {return this->timestamp_sec_;};
+
+  /**
+   * \brief Gets message type(see CommType)
+   *
+   * \return communications type
+   */
+	uint8_t getTimestampNSec() {return this->timestamp_nsec_;};
+
     /**
    * \brief Gets reply code(see ReplyType)
    *
    * \return reply code
    */
-  int getReplyCode() {return this->reply_code_;};
-  
-   /**
+  uint8_t getReplyCode() {return this->reply_code_;};
+
+  /**
    * \brief Gets message length (total size, HEADER + data)
    *
    * \return message length
    */
-	int getMsgLength() {return this->getHeaderSize() + this->data_.getBufferSize();};
-  
-   /**
+	uint32_t getMsgLength() {return this->getHeaderSize() + this->data_.getBufferSize();};
+
+  /**
    * \brief Gets length of message data portion.
    *
    * \return message data length
    */
-	int getDataLength() {return this->data_.getBufferSize();};
-  
-   /**
+	uint32_t getDataBufferLength() {return this->data_.getBufferSize();};
+
+  uint32_t getPayloadLength() {return this->payload_length_;};
+
+  /**
    * \brief Returns a reference to the internal data member
    *
    * \return reference to message data portion.
    */
   industrial::byte_array::ByteArray & getData() {return this->data_;};
-	
+
+  /**
+   * \brief Sets data portion
+   *
+   * \param data portion
+   */
+  void setData(industrial::byte_array::ByteArray &data);
+
   /**
    * \brief performs logical checks to ensure that the message is fully
    * defined and adheres to the message conventions.
@@ -280,26 +293,38 @@ public:
    * \return true if message valid, false otherwise
    */
   bool validateMessage();
-	
 
+  const char START_TAG[4] = {0x02, 0x02, 0x02, 0x02};
+  const char END_TAG[4] = {0x03, 0x03, 0x03, 0x03};
 
 private:
 
+  uint32_t payload_length_;
+
+  uint16_t message_type_;
+
+  static const uint32_t MESSAGE_STRING_LENGTH = 10;
+  std::string message_string_;
+
+  uint8_t version_major_;
+
+  uint8_t version_minor_;
+
+  uint16_t sequence_;
+
+  uint32_t timestamp_sec_;
+  uint32_t timestamp_nsec_;
+
   /**
-   * \brief Message type(see StandardMsgType)
-   */
-  industrial::shared_types::shared_int message_type_;
-  
-   /**
    * \brief Communications type(see CommType)
    */
-  industrial::shared_types::shared_int comm_type_;
-  
+  uint8_t comm_type_;
+
   /**
    * \brief Reply code(see ReplyType)
    */
-  industrial::shared_types::shared_int reply_code_;
-  
+  uint8_t reply_code_;
+
   /**
    * \brief Message data portion
    */
@@ -308,42 +333,41 @@ private:
   /**
    * \brief Size(in bytes) of message header (fixed)
    */
-	static const unsigned int HEADER_SIZE = sizeof(industrial::shared_types::shared_int) +
-	    sizeof(industrial::shared_types::shared_int) +
-	    sizeof(industrial::shared_types::shared_int);
-      
-  /**
-   * \brief Size (in bytes) of message length parameter (fixed)
-   */
-	static const unsigned int LENGTH_SIZE = sizeof(industrial::shared_types::shared_int);
+	static const uint32_t HEADER_SIZE =
+      sizeof(uint8_t) * 8 +
+      sizeof(uint16_t) * 2 +
+      sizeof(uint32_t) +
+      sizeof(char) * 10 +
+      sizeof(uint32_t) * 2;
 
   /**
    * \brief Sets message type
    *
    * \param message type
    */
-  void setMessageType(int msgType) {this->message_type_ = msgType;};
-  
+  void setMessageType(uint8_t msgType) {this->message_type_ = msgType;};
+
+  void setVersionMajor(uint8_t versionMajor) {this->version_major_ = versionMajor;};
+
+  void setVersionMinor(uint8_t versionMinor) {this->version_minor_ = versionMinor;};
+
+  void setSequence(uint16_t sequence) {this->sequence_ = sequence;};
+
+  void setTimeStamp(uint32_t sec, uint32_t nsec) {this->timestamp_sec_ = sec; this->timestamp_nsec_ = nsec;};
+
   /**
    * \brief Sets communications type
    *
    * \param communications type
    */
-  void setCommType(int commType) {this->comm_type_ = commType;};
-  
+  void setCommType(uint8_t commType) {this->comm_type_ = commType;};
+
   /**
    * \brief Sets reply code
    *
    * \param reply code
    */
-  void setReplyCode(int replyCode) {this->reply_code_ = replyCode;};
-  
-  /**
-   * \brief Sets data portion
-   *
-   * \param data portion
-   */
-  void setData(industrial::byte_array::ByteArray & data);
+  void setReplyCode(uint8_t replyCode) {this->reply_code_ = replyCode;};
 };
 
 }//namespace simple_message

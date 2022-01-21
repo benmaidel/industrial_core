@@ -44,7 +44,6 @@ namespace byte_array
 {
 
 using namespace industrial::simple_serialize;
-using namespace industrial::shared_types;
 using namespace industrial::byte_array;
 
 ByteArray::ByteArray(void)
@@ -64,7 +63,7 @@ void ByteArray::init()
   this->buffer_.clear();
 }
 
-bool ByteArray::init(const char* buffer, const shared_int byte_size)
+bool ByteArray::init(const char* buffer, const uint32_t byte_size)
 {
   bool rtn;
 
@@ -102,7 +101,7 @@ void ByteArray::copyTo(std::vector<char> &out)
 
 
 #ifdef BYTE_SWAPPING
-void ByteArray::swap(void *value, shared_int byteSize)
+void ByteArray::swap(void *value, uint32_t byteSize)
 {
   LOG_COMM("Executing byte swapping");
 
@@ -139,31 +138,97 @@ char* ByteArray::getRawDataPtr()
  // Methods for loading various data types.
  //
  */
-bool ByteArray::load(shared_bool value)
+bool ByteArray::load(bool value)
 {
-  return this->load(&value, sizeof(shared_bool));
+  return this->load(&value, sizeof(bool));
 }
 
-bool ByteArray::load(shared_real value)
-{
-#ifdef BYTE_SWAPPING
-  LOG_COMM("Value (loading-input): %f", value);
-  this->swap(&value, sizeof(shared_real));
-  LOG_COMM("Value (loading-output): %f", value);
-#endif
-
-  return this->load(&value, sizeof(shared_real));
-}
-
-bool ByteArray::load(shared_int value)
+bool ByteArray::load(uint8_t value)
 {
 #ifdef BYTE_SWAPPING
   LOG_COMM("Value (loading-input): %d", value);
-  this->swap(&value, sizeof(shared_int));
+  this->swap(&value, sizeof(uint8_t));
   LOG_COMM("Value (loading-output): %d", value);
 #endif
 
-  return this->load(&value, sizeof(shared_int));
+  return this->load(&value, sizeof(uint8_t));
+}
+
+bool ByteArray::load(uint16_t value)
+{
+#ifdef BYTE_SWAPPING
+  LOG_COMM("Value (loading-input): %d", value);
+  this->swap(&value, sizeof(uint16_t));
+  LOG_COMM("Value (loading-output): %d", value);
+#endif
+
+  return this->load(&value, sizeof(uint16_t));
+}
+
+bool ByteArray::load(uint32_t value)
+{
+#ifdef BYTE_SWAPPING
+  LOG_COMM("Value (loading-input): %d", value);
+  this->swap(&value, sizeof(uint32_t));
+  LOG_COMM("Value (loading-output): %d", value);
+#endif
+
+  return this->load(&value, sizeof(uint32_t));
+}
+
+bool ByteArray::load(int8_t value)
+{
+#ifdef BYTE_SWAPPING
+  LOG_COMM("Value (loading-input): %d", value);
+  this->swap(&value, sizeof(int8_t));
+  LOG_COMM("Value (loading-output): %d", value);
+#endif
+
+  return this->load(&value, sizeof(int8_t));
+}
+
+bool ByteArray::load(int16_t value)
+{
+#ifdef BYTE_SWAPPING
+  LOG_COMM("Value (loading-input): %d", value);
+  this->swap(&value, sizeof(int16_t));
+  LOG_COMM("Value (loading-output): %d", value);
+#endif
+
+  return this->load(&value, sizeof(int16_t));
+}
+
+bool ByteArray::load(int32_t value)
+{
+#ifdef BYTE_SWAPPING
+  LOG_COMM("Value (loading-input): %d", value);
+  this->swap(&value, sizeof(int32_t));
+  LOG_COMM("Value (loading-output): %d", value);
+#endif
+
+  return this->load(&value, sizeof(int32_t));
+}
+
+bool ByteArray::load(float value)
+{
+#ifdef BYTE_SWAPPING
+  LOG_COMM("Value (loading-input): %f", value);
+  this->swap(&value, sizeof(float));
+  LOG_COMM("Value (loading-output): %f", value);
+#endif
+
+  return this->load(&value, sizeof(float));
+}
+
+bool ByteArray::load(double value)
+{
+#ifdef BYTE_SWAPPING
+  LOG_COMM("Value (loading-input): %f", value);
+  this->swap(&value, sizeof(double));
+  LOG_COMM("Value (loading-output): %f", value);
+#endif
+
+  return this->load(&value, sizeof(double));
 }
 
 bool ByteArray::load(simple_serialize::SimpleSerialize &value)
@@ -188,7 +253,7 @@ bool ByteArray::load(ByteArray &value)
   return true;
 }
 
-bool ByteArray::load(void* value, const shared_int byte_size)
+bool ByteArray::load(void* value, const uint32_t byte_size)
 {
 
   bool rtn;
@@ -230,33 +295,104 @@ bool ByteArray::load(void* value, const shared_int byte_size)
  // lost.
  //
  */
-bool ByteArray::unload(shared_bool & value)
+bool ByteArray::unload(bool & value)
 {
-  shared_bool rtn = this->unload(&value, sizeof(shared_bool));
+  bool rtn = this->unload(&value, sizeof(bool));
   return rtn;
 
 }
 
-bool ByteArray::unload(shared_real &value)
+bool ByteArray::unload(uint8_t &value)
 {
-  bool rtn = this->unload(&value, sizeof(shared_real));
-
-#ifdef BYTE_SWAPPING
-  LOG_COMM("Value (unloading-input): %f", value);
-  this->swap(&value, sizeof(shared_real));
-  LOG_COMM("Value (unloading-output): %f", value);
-#endif
-
-  return rtn;
-}
-
-bool ByteArray::unload(shared_int &value)
-{
-  bool rtn = this->unload(&value, sizeof(shared_int));
+  bool rtn = this->unload(&value, sizeof(uint8_t));
 
 #ifdef BYTE_SWAPPING
   LOG_COMM("Value (unloading-input): %d", value);
-  this->swap(&value, sizeof(shared_int));
+  this->swap(&value, sizeof(uint8_t));
+  LOG_COMM("Value (unloading-output): %d", value);
+#endif
+  return rtn;
+}
+
+bool ByteArray::unload(uint16_t &value)
+{
+  bool rtn = this->unload(&value, sizeof(uint16_t));
+
+#ifdef BYTE_SWAPPING
+  LOG_COMM("Value (unloading-input): %d", value);
+  this->swap(&value, sizeof(uint16_t));
+  LOG_COMM("Value (unloading-output): %d", value);
+#endif
+  return rtn;
+}
+
+bool ByteArray::unload(uint32_t &value)
+{
+  bool rtn = this->unload(&value, sizeof(uint32_t));
+
+#ifdef BYTE_SWAPPING
+  LOG_COMM("Value (unloading-input): %d", value);
+  this->swap(&value, sizeof(uint32_t));
+  LOG_COMM("Value (unloading-output): %d", value);
+#endif
+  return rtn;
+}
+
+bool ByteArray::unload(int8_t &value)
+{
+  bool rtn = this->unload(&value, sizeof(int8_t));
+
+#ifdef BYTE_SWAPPING
+  LOG_COMM("Value (unloading-input): %d", value);
+  this->swap(&value, sizeof(int8_t));
+  LOG_COMM("Value (unloading-output): %d", value);
+#endif
+  return rtn;
+}
+
+bool ByteArray::unload(int16_t &value)
+{
+  bool rtn = this->unload(&value, sizeof(int16_t));
+
+#ifdef BYTE_SWAPPING
+  LOG_COMM("Value (unloading-input): %d", value);
+  this->swap(&value, sizeof(int16_t));
+  LOG_COMM("Value (unloading-output): %d", value);
+#endif
+  return rtn;
+}
+
+bool ByteArray::unload(int32_t &value)
+{
+  bool rtn = this->unload(&value, sizeof(int32_t));
+
+#ifdef BYTE_SWAPPING
+  LOG_COMM("Value (unloading-input): %d", value);
+  this->swap(&value, sizeof(int32_t));
+  LOG_COMM("Value (unloading-output): %d", value);
+#endif
+  return rtn;
+}
+
+bool ByteArray::unload(float &value)
+{
+  bool rtn = this->unload(&value, sizeof(float));
+
+#ifdef BYTE_SWAPPING
+  LOG_COMM("Value (unloading-input): %d", value);
+  this->swap(&value, sizeof(float));
+  LOG_COMM("Value (unloading-output): %d", value);
+#endif
+  return rtn;
+}
+
+bool ByteArray::unload(double &value)
+{
+  bool rtn = this->unload(&value, sizeof(double));
+
+#ifdef BYTE_SWAPPING
+  LOG_COMM("Value (unloading-input): %d", value);
+  this->swap(&value, sizeof(double));
   LOG_COMM("Value (unloading-output): %d", value);
 #endif
   return rtn;
@@ -269,7 +405,7 @@ bool ByteArray::unload(simple_serialize::SimpleSerialize &value)
 }
 
 
-bool ByteArray::unload(ByteArray &value, const shared_int byte_size)
+bool ByteArray::unload(ByteArray &value, const uint32_t byte_size)
 {
   LOG_COMM("Executing byte array unload through byte array");
   bool rtn;
@@ -292,7 +428,7 @@ bool ByteArray::unload(ByteArray &value, const shared_int byte_size)
   return rtn;
 }
 
-bool ByteArray::unload(void* value, shared_int byteSize)
+bool ByteArray::unload(void* value, uint32_t byteSize)
 {
   bool rtn;
 
@@ -331,31 +467,138 @@ bool ByteArray::unload(void* value, shared_int byteSize)
  // be used sparingly, as they are expensive.
  //
  */
-bool ByteArray::unloadFront(industrial::shared_types::shared_real &value)
+bool ByteArray::unloadFront(bool &value)
 {
-  bool rtn = this->unloadFront(&value, sizeof(shared_real));
-
-#ifdef BYTE_SWAPPING
-  LOG_COMM("Value (unloading-input): %f", value);
-  this->swap(&value, sizeof(shared_real));
-  LOG_COMM("Value (unloading-output): %f", value);
-#endif
-  return rtn;
-}
-
-bool ByteArray::unloadFront(industrial::shared_types::shared_int &value)
-{
-  bool rtn = this->unloadFront(&value, sizeof(shared_int));
+  bool rtn = this->unloadFront(&value, sizeof(bool));
 
 #ifdef BYTE_SWAPPING
   LOG_COMM("Value (unloading-input): %d", value);
-  this->swap(&value, sizeof(shared_int));
+  this->swap(&value, sizeof(bool));
   LOG_COMM("Value (unloading-output): %d", value);
 #endif
   return rtn;
 }
 
-bool ByteArray::unloadFront(void* value, const industrial::shared_types::shared_int byteSize)
+bool ByteArray::unloadFront(uint8_t &value)
+{
+  bool rtn = this->unloadFront(&value, sizeof(uint8_t));
+
+#ifdef BYTE_SWAPPING
+  LOG_COMM("Value (unloading-input): %d", value);
+  this->swap(&value, sizeof(uint8_t));
+  LOG_COMM("Value (unloading-output): %d", value);
+#endif
+  return rtn;
+}
+
+bool ByteArray::unloadFront(uint16_t &value)
+{
+  bool rtn = this->unloadFront(&value, sizeof(uint16_t));
+
+#ifdef BYTE_SWAPPING
+  LOG_COMM("Value (unloading-input): %d", value);
+  this->swap(&value, sizeof(uint16_t));
+  LOG_COMM("Value (unloading-output): %d", value);
+#endif
+  return rtn;
+}
+
+bool ByteArray::unloadFront(uint32_t &value)
+{
+  bool rtn = this->unloadFront(&value, sizeof(uint32_t));
+
+#ifdef BYTE_SWAPPING
+  LOG_COMM("Value (unloading-input): %d", value);
+  this->swap(&value, sizeof(uint32_t));
+  LOG_COMM("Value (unloading-output): %d", value);
+#endif
+  return rtn;
+}
+
+bool ByteArray::unloadFront(int8_t &value)
+{
+  bool rtn = this->unloadFront(&value, sizeof(int8_t));
+
+#ifdef BYTE_SWAPPING
+  LOG_COMM("Value (unloading-input): %d", value);
+  this->swap(&value, sizeof(int8_t));
+  LOG_COMM("Value (unloading-output): %d", value);
+#endif
+  return rtn;
+}
+
+bool ByteArray::unloadFront(int16_t &value)
+{
+  bool rtn = this->unloadFront(&value, sizeof(int16_t));
+
+#ifdef BYTE_SWAPPING
+  LOG_COMM("Value (unloading-input): %d", value);
+  this->swap(&value, sizeof(int16_t));
+  LOG_COMM("Value (unloading-output): %d", value);
+#endif
+  return rtn;
+}
+
+bool ByteArray::unloadFront(int32_t &value)
+{
+  bool rtn = this->unloadFront(&value, sizeof(int32_t));
+
+#ifdef BYTE_SWAPPING
+  LOG_COMM("Value (unloading-input): %d", value);
+  this->swap(&value, sizeof(int32_t));
+  LOG_COMM("Value (unloading-output): %d", value);
+#endif
+  return rtn;
+}
+
+bool ByteArray::unloadFront(float &value)
+{
+  bool rtn = this->unloadFront(&value, sizeof(float));
+
+#ifdef BYTE_SWAPPING
+  LOG_COMM("Value (unloading-input): %d", value);
+  this->swap(&value, sizeof(float));
+  LOG_COMM("Value (unloading-output): %d", value);
+#endif
+  return rtn;
+}
+
+bool ByteArray::unloadFront(double &value)
+{
+  bool rtn = this->unloadFront(&value, sizeof(double));
+
+#ifdef BYTE_SWAPPING
+  LOG_COMM("Value (unloading-input): %d", value);
+  this->swap(&value, sizeof(double));
+  LOG_COMM("Value (unloading-output): %d", value);
+#endif
+  return rtn;
+}
+
+bool ByteArray::unloadFront(ByteArray &value, const uint32_t byte_size)
+{
+  LOG_COMM("Executing byte array unloadFront through byte array");
+  bool rtn;
+
+  if (byte_size <= this->getBufferSize())
+  {
+    std::deque<char>& src  = this->buffer_;
+    std::deque<char>& dest = value.buffer_;
+
+    dest.insert(dest.end(), src.begin(), src.begin()+byte_size);
+    src.erase(src.begin(), src.begin()+byte_size);
+    rtn = true;
+  }
+  else
+  {
+    LOG_ERROR("Buffer smaller than requested size.");
+    rtn = false;
+  }
+
+  return rtn;
+}
+
+bool ByteArray::unloadFront(void* value, const uint32_t byteSize)
 {
   bool rtn;
 
