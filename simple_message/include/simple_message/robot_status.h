@@ -35,11 +35,9 @@
 #ifndef FLATHEADERS
 #include "simple_message/simple_message.h"
 #include "simple_message/simple_serialize.h"
-#include "simple_message/shared_types.h"
 #else
 #include "simple_message.h"
 #include "simple_serialize.h"
-#include "shared_types.h"
 #endif
 
 namespace industrial
@@ -101,13 +99,13 @@ typedef TriStates::TriState TriState;
  * to highest). The standard sizes are given, but can change based on type sizes:
  *
  *   member:             type                                      size
- *   drives_powered      (industrial::shared_types::shared_int)    4  bytes
- *   e_stopped           (industrial::shared_types::shared_int)    4  bytes
- *   error_code          (industrial::shared_types::shared_int)    4  bytes
- *   in_error            (industrial::shared_types::shared_int)    4  bytes
- *   in_motion           (industrial::shared_types::shared_int)    4  bytes
- *   mode                (industrial::shared_types::shared_int)    4  bytes
- *   motion_possible     (industrial::shared_types::shared_int)    4  bytes
+ *   drives_powered      (int32_t)    4  bytes
+ *   e_stopped           (int32_t)    4  bytes
+ *   error_code          (int32_t)    4  bytes
+ *   in_error            (int32_t)    4  bytes
+ *   in_motion           (int32_t)    4  bytes
+ *   mode                (int32_t)    4  bytes
+ *   motion_possible     (int32_t)    4  bytes
  *
  * THIS CLASS IS NOT THREAD-SAFE
  *
@@ -139,7 +137,7 @@ void init();
  * \brief Initializes a full robot status message
  *
  */
-void init(TriState drivesPowered, TriState eStopped, industrial::shared_types::shared_int errorCode, TriState inError,
+void init(TriState drivesPowered, TriState eStopped, int32_t errorCode, TriState inError,
           TriState inMotion, RobotMode mode, TriState motionPossible);
 
 TriState getDrivesPowered()
@@ -152,7 +150,7 @@ TriState getEStopped()
   return TriState(e_stopped_);
 }
 
-industrial::shared_types::shared_int getErrorCode() const
+int32_t getErrorCode() const
 {
   return error_code_;
 }
@@ -187,7 +185,7 @@ void setEStopped(TriState eStopped)
   this->e_stopped_ = eStopped;
 }
 
-void setErrorCode(industrial::shared_types::shared_int errorCode)
+void setErrorCode(int32_t errorCode)
 {
   this->error_code_ = errorCode;
 }
@@ -231,7 +229,7 @@ bool load(industrial::byte_array::ByteArray *buffer);
 bool unload(industrial::byte_array::ByteArray *buffer);
 unsigned int byteLength()
 {
-  return 7 * sizeof(industrial::shared_types::shared_int);
+  return 7 * sizeof(int32_t);
 }
 
 private:
@@ -239,37 +237,37 @@ private:
 /**
  * \brief Operating mode (see RobotModes::RobotMode)
  */
-industrial::shared_types::shared_int mode_;
+int32_t mode_;
 
 /**
  * \brief E-stop state (see TriStates::TriState)
  */
-industrial::shared_types::shared_int e_stopped_;
+int32_t e_stopped_;
 
 /**
  * \brief Drive power state (see TriStates::TriState)
  */
-industrial::shared_types::shared_int drives_powered_;
+int32_t drives_powered_;
 
 /**
  * \brief motion possible state (see TriStates::TriState)
  */
-industrial::shared_types::shared_int motion_possible_;
+int32_t motion_possible_;
 
 /**
  * \brief in motion state (see TriStates::TriState)
  */
-industrial::shared_types::shared_int in_motion_;
+int32_t in_motion_;
 
 /**
  * \brief in error state (see TriStates::TriState)
  */
-industrial::shared_types::shared_int in_error_;
+int32_t in_error_;
 
 /**
  * \brief error code (non-zero is error)
  */
-industrial::shared_types::shared_int error_code_;
+int32_t error_code_;
 
 };
 

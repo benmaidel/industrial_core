@@ -33,18 +33,15 @@
 #include "simple_message/socket/tcp_socket.h"
 #include "simple_message/log_wrapper.h"
 #include "simple_message/simple_message.h"
-#include "simple_message/shared_types.h"
 #else
 #include "tcp_socket.h"
 #include "log_wrapper.h"
 #include "simple_message.h"
-#include "shared_types.h"
 #endif
 
 using namespace industrial::smpl_msg_connection;
 using namespace industrial::byte_array;
 using namespace industrial::simple_message;
-using namespace industrial::shared_types;
 
 namespace industrial
 {
@@ -62,21 +59,21 @@ TcpSocket::~TcpSocket()
   CLOSE(this->getSockHandle());
 }
 
-int TcpSocket::rawSendBytes(char *buffer, shared_int num_bytes)
+int TcpSocket::rawSendBytes(char *buffer, uint32_t num_bytes)
 {
   int rc = this->SOCKET_FAIL;
 
   rc = SEND(this->getSockHandle(), buffer, num_bytes, 0);
-  
+
   return rc;
 }
 
-int TcpSocket::rawReceiveBytes(char *buffer, shared_int num_bytes)
+int TcpSocket::rawReceiveBytes(char *buffer, uint32_t num_bytes)
 {
   int rc = this->SOCKET_FAIL;
-  
+
   rc = RECV(this->getSockHandle(), buffer, num_bytes, 0);
-  
+
   return rc;
 }
 

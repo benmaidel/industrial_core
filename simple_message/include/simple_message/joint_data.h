@@ -35,11 +35,9 @@
 #ifndef FLATHEADERS
 #include "simple_message/simple_message.h"
 #include "simple_message/simple_serialize.h"
-#include "simple_message/shared_types.h"
 #else
 #include "simple_message.h"
 #include "simple_serialize.h"
-#include "shared_types.h"
 #endif
 
 namespace industrial
@@ -58,7 +56,7 @@ namespace joint_data
  * are given, but can change based on type sizes:
  *
  *   member:             type                                      size
- *   joints              (industrial::shared_types::shared_real)   4 * MAX_NUM_JOINTS
+ *   joints              (float)   4 * MAX_NUM_JOINTS
  *
  *
  * THIS CLASS IS NOT THREAD-SAFE
@@ -95,7 +93,7 @@ public:
    *
    * \return true if value set, otherwise false (index greater than max)
    */
-  bool setJoint(industrial::shared_types::shared_int index, industrial::shared_types::shared_real value);
+  bool setJoint(uint32_t index, float value);
 
   /**
    * \brief Gets a joint value within the buffer
@@ -105,7 +103,7 @@ public:
    *
    * \return true if value valid, otherwise false (index greater than max)
    */
-  bool getJoint(industrial::shared_types::shared_int index, industrial::shared_types::shared_real & value) const;
+  bool getJoint(uint32_t index, float & value) const;
 
   /**
    * \brief Gets a joint value within the buffer (Only use this form if you are
@@ -115,7 +113,7 @@ public:
    *
    * \return joint value (returns 0.0 if index is out of bounds)
    */
-  industrial::shared_types::shared_real getJoint(industrial::shared_types::shared_int index) const;
+  float getJoint(uint32_t index) const;
 
   /**
    * \brief Copies the passed in value
@@ -129,7 +127,7 @@ public:
    *
    * \return max number of joints
    */
-  int getMaxNumJoints() const
+  uint32_t getMaxNumJoints() const
   {
     return MAX_NUM_JOINTS;
   }
@@ -146,7 +144,7 @@ public:
   bool unload(industrial::byte_array::ByteArray *buffer);
   unsigned int byteLength()
   {
-    return MAX_NUM_JOINTS * sizeof(industrial::shared_types::shared_real);
+    return MAX_NUM_JOINTS * sizeof(float);
   }
 
 private:
@@ -154,11 +152,11 @@ private:
   /**
    * \brief maximum number of joints positions that can be held in the message.
    */
-  static const industrial::shared_types::shared_int MAX_NUM_JOINTS = 10;
+  static const uint32_t MAX_NUM_JOINTS = 10;
   /**
    * \brief internal data buffer
    */
-  industrial::shared_types::shared_real joints_[MAX_NUM_JOINTS];
+  float joints_[MAX_NUM_JOINTS];
 
 };
 

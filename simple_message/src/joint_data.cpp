@@ -30,15 +30,11 @@
  */
 #ifndef FLATHEADERS
 #include "simple_message/joint_data.h"
-#include "simple_message/shared_types.h"
 #include "simple_message/log_wrapper.h"
 #else
 #include "joint_data.h"
-#include "shared_types.h"
 #include "log_wrapper.h"
 #endif
-
-using namespace industrial::shared_types;
 
 namespace industrial
 {
@@ -62,7 +58,7 @@ void JointData::init()
   }
 }
 
-bool JointData::setJoint(shared_int index, shared_real value)
+bool JointData::setJoint(uint32_t index, float value)
 {
   bool rtn = false;
 
@@ -79,7 +75,7 @@ bool JointData::setJoint(shared_int index, shared_real value)
   return rtn;
 }
 
-bool JointData::getJoint(shared_int index, shared_real & value) const
+bool JointData::getJoint(uint32_t index, float & value) const
 {
   bool rtn = false;
 
@@ -96,17 +92,17 @@ bool JointData::getJoint(shared_int index, shared_real & value) const
   return rtn;
 }
 
-shared_real JointData::getJoint(shared_int index) const
+float JointData::getJoint(uint32_t index) const
 {
-  shared_real rtn = 0.0;
+  float rtn = 0.0;
   this->getJoint(index, rtn);
   return rtn;
 }
-  
+
 
 void JointData::copyFrom(JointData &src)
 {
-  shared_real value = 0.0;
+  float value = 0.0;
 
   for (int i = 0; i < this->getMaxNumJoints(); i++)
   {
@@ -119,7 +115,7 @@ bool JointData::operator==(JointData &rhs)
 {
   bool rtn = true;
 
-  shared_real lhsvalue, rhsvalue;
+  float lhsvalue, rhsvalue;
 
   for (int i = 0; i < this->getMaxNumJoints(); i++)
   {
@@ -138,7 +134,7 @@ bool JointData::operator==(JointData &rhs)
 bool JointData::load(industrial::byte_array::ByteArray *buffer)
 {
   bool rtn = false;
-  shared_real value = 0.0;
+  float value = 0.0;
 
   LOG_COMM("Executing joint position load");
   for (int i = 0; i < this->getMaxNumJoints(); i++)
@@ -157,7 +153,7 @@ bool JointData::load(industrial::byte_array::ByteArray *buffer)
 bool JointData::unload(industrial::byte_array::ByteArray *buffer)
 {
   bool rtn = false;
-  shared_real value = 0.0;
+  float value = 0.0;
 
   LOG_COMM("Executing joint position unload");
   for (int i = this->getMaxNumJoints() - 1; i >= 0; i--)

@@ -41,7 +41,6 @@
 #include "log_wrapper.h"
 #endif
 
-using namespace industrial::shared_types;
 using namespace industrial::byte_array;
 using namespace industrial::simple_message;
 using namespace industrial::robot_status;

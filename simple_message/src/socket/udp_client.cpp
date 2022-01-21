@@ -38,7 +38,6 @@
 
 
 using namespace industrial::byte_array;
-using namespace industrial::shared_types;
 
 namespace industrial
 {
@@ -113,12 +112,12 @@ bool UdpClient::makeConnect()
   bool rtn = false;
   const int timeout = 1000;  // Time (ms) between handshake sends
   int bytesRcvd = 0;
-  
+
   if (!this->isConnected())
   {
     this->setConnected(false);
     send.load((void*)&sendHS, sizeof(sendHS));
-  
+
     // copy to local array, since ByteArray no longer supports
     // direct pointer-access to data values
     const int sendLen = send.getBufferSize();
@@ -134,7 +133,7 @@ bool UdpClient::makeConnect()
       if (this->isReadyReceive(timeout))
       {
         bytesRcvd = this->rawReceiveBytes(this->buffer_, 0);
- 	LOG_DEBUG("UDP client received possible handshake");	
+ 	LOG_DEBUG("UDP client received possible handshake");
         recv.init(&this->buffer_[0], bytesRcvd);
         recv.unload((void*)&recvHS, sizeof(recvHS));
       }
@@ -143,7 +142,7 @@ bool UdpClient::makeConnect()
     LOG_INFO("UDP client connected");
     rtn = true;
     this->setConnected(true);
-    
+
   }
   else
   {

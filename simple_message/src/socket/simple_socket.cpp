@@ -38,7 +38,6 @@
 #endif
 
 using namespace industrial::byte_array;
-using namespace industrial::shared_types;
 
 namespace industrial
 {
@@ -95,11 +94,11 @@ namespace industrial
 
     }
 
-    bool SimpleSocket::receiveBytes(ByteArray & buffer, shared_int num_bytes)
+    bool SimpleSocket::receiveBytes(ByteArray & buffer, uint32_t num_bytes)
     {
       int rc = this->SOCKET_FAIL;
       bool rtn = false;
-      shared_int remainBytes = num_bytes;
+      uint32_t remainBytes = num_bytes;
       bool ready, error;
 
       // Reset the buffer (this is not required since the buffer length should

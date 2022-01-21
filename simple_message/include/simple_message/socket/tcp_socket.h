@@ -34,10 +34,8 @@
 
 #ifndef FLATHEADERS
 #include "simple_message/socket/simple_socket.h"
-#include "simple_message/shared_types.h"
 #else
 #include "simple_socket.h"
-#include "shared_types.h"
 #endif
 
 #ifdef LINUXSOCKETS
@@ -69,9 +67,9 @@ private:
 
   // Virtual
   int rawSendBytes(char *buffer,
-      industrial::shared_types::shared_int num_bytes);
+      uint32_t num_bytes);
   int rawReceiveBytes(char *buffer,
-      industrial::shared_types::shared_int num_bytes);
+      uint32_t num_bytes);
   bool rawPoll(int timeout, bool & ready, bool & error);
 
 };

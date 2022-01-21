@@ -41,7 +41,6 @@
 #include "log_wrapper.h"
 #endif
 
-using namespace industrial::shared_types;
 using namespace industrial::byte_array;
 using namespace industrial::simple_message;
 using namespace industrial::joint_data;
@@ -88,12 +87,12 @@ bool JointMessage::init(industrial::simple_message::SimpleMessage & msg)
   return rtn;
 }
 
-void JointMessage::setSequence(shared_int sequence)
+void JointMessage::setSequence(uint32_t sequence)
 {
   this->sequence_ = sequence;
 }
 
-void JointMessage::init(shared_int seq, JointData& joints)
+void JointMessage::init(uint32_t seq, JointData& joints)
 {
   this->setSequence(seq);
   this->joints_.copyFrom(joints);

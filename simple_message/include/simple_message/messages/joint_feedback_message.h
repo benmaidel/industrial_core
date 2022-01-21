@@ -35,12 +35,10 @@
 #ifndef FLATHEADERS
 #include "simple_message/typed_message.h"
 #include "simple_message/simple_message.h"
-#include "simple_message/shared_types.h"
 #include "simple_message/joint_feedback.h"
 #else
 #include "typed_message.h"
 #include "simple_message.h"
-#include "shared_types.h"
 #include "joint_feedback.h"
 #endif
 
@@ -110,12 +108,12 @@ public:
     return this->data_.byteLength();
   }
 
-  industrial::shared_types::shared_int getRobotID()
+  uint32_t getRobotID()
   {
     return this->data_.getRobotID();
   }
 
-  bool getTime(industrial::shared_types::shared_real & time)
+  bool getTime(float & time)
   {
     return this->data_.getTime(time);
   }

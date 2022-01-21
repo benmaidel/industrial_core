@@ -36,12 +36,10 @@
 #include "simple_message/joint_data.h"
 #include "simple_message/simple_message.h"
 #include "simple_message/simple_serialize.h"
-#include "simple_message/shared_types.h"
 #else
 #include "joint_data.h"
 #include "simple_message.h"
 #include "simple_serialize.h"
-#include "shared_types.h"
 #endif
 
 namespace industrial
@@ -84,10 +82,10 @@ typedef ValidFieldTypes::ValidFieldType ValidFieldType;
  * to highest). The standard sizes are given, but can change based on type sizes:
  *
  *   member:             type                                      size
- *   robot_id            (industrial::shared_types::shared_int)    4  bytes
- *   sequence            (industrial::shared_types::shared_int)    4  bytes
- *   valid_fields        (industrial::shared_types::shared_int)    4  bytes
- *   time                (industrial::shared_types::shared_real)   4  bytes
+ *   robot_id            (uint32_t)                                 4  bytes
+ *   sequence            (uint32_t)                                 4  bytes
+ *   valid_fields        (uint32_t)                                 4  bytes
+ *   time                (float)                                    4  bytes
  *   positions           (industrial::joint_data)                  40 bytes
  *   velocities          (industrial::joint_data)                  40 bytes
  *   accelerations       (industrial::joint_data)                  40 bytes
@@ -124,10 +122,10 @@ public:
    * \brief Initializes a complete trajectory point
    *
    */
-  void init(industrial::shared_types::shared_int robot_id,
-            industrial::shared_types::shared_int sequence,
-            industrial::shared_types::shared_int valid_fields,
-            industrial::shared_types::shared_real time,
+  void init(uint32_t robot_id,
+            uint32_t sequence,
+            uint32_t valid_fields,
+            float time,
             industrial::joint_data::JointData & positions,
             industrial::joint_data::JointData & velocities,
             industrial::joint_data::JointData & accelerations);
@@ -138,7 +136,7 @@ public:
    *
    * \param robot_id new robot_id value
    */
-  void setRobotID(industrial::shared_types::shared_int robot_id)
+  void setRobotID(uint32_t robot_id)
   {
     this->robot_id_ = robot_id;
   }
@@ -149,7 +147,7 @@ public:
    *
    * @return robot_id value
    */
-  industrial::shared_types::shared_int getRobotID()
+  uint32_t getRobotID()
   {
     return this->robot_id_;
   }
@@ -159,7 +157,7 @@ public:
    *
    * \param sequence value
    */
-  void setSequence(industrial::shared_types::shared_int sequence)
+  void setSequence(uint32_t sequence)
   {
     this->sequence_ = sequence;
   }
@@ -169,7 +167,7 @@ public:
    *
    * \return joint trajectory sequence number
    */
-  industrial::shared_types::shared_int getSequence()
+  uint32_t getSequence()
   {
     return this->sequence_;
   }
@@ -179,7 +177,7 @@ public:
    *
    * \param time new time value
    */
-  void setTime(industrial::shared_types::shared_real time)
+  void setTime(float time)
   {
     this->time_ = time;
     this->valid_fields_ |= ValidFieldTypes::TIME;  // set the bit
@@ -191,7 +189,7 @@ public:
    * \param time returned time value
    * \return true if this field contains valid data
    */
-  bool getTime(industrial::shared_types::shared_real & time)
+  bool getTime(float & time)
   {
     time = this->time_;
     return is_valid(ValidFieldTypes::TIME);
@@ -331,7 +329,7 @@ public:
   bool unload(industrial::byte_array::ByteArray *buffer);
   unsigned int byteLength()
   {
-    return 3*sizeof(industrial::shared_types::shared_int) + sizeof(industrial::shared_types::shared_real)
+    return 3*sizeof(uint32_t) + sizeof(float)
         + 3*this->positions_.byteLength();
   }
 
@@ -340,21 +338,21 @@ private:
   /**
    * \brief robot group # (0-based) for controllers that support multiple axis-groups
    */
-  industrial::shared_types::shared_int robot_id_;
+  uint32_t robot_id_;
   /**
    * \brief trajectory sequence number
    */
-  industrial::shared_types::shared_int sequence_;
+  uint32_t sequence_;
   /**
    * \brief bit-mask of (optional) fields that have been initialized with valid data
    * \see enum ValidFieldTypes
    */
-  industrial::shared_types::shared_int valid_fields_;
+  uint32_t valid_fields_;
   /**
    * \brief joint trajectory point timestamp
    *        Typically, time_from_start of this trajectory (in seconds)
    */
-  industrial::shared_types::shared_real time_;
+  float time_;
 
   /**
    * \brief joint trajectory point positional data

@@ -36,12 +36,10 @@
 #include "simple_message/joint_data.h"
 #include "simple_message/simple_message.h"
 #include "simple_message/simple_serialize.h"
-#include "simple_message/shared_types.h"
 #else
 #include "joint_data.h"
 #include "simple_message.h"
 #include "simple_serialize.h"
-#include "shared_types.h"
 #endif
 
 namespace industrial
@@ -79,10 +77,10 @@ typedef SpecialSeqValues::SpecialSeqValue SpecialSeqValue;
  * to highest). The standard sizes are given, but can change based on type sizes:
  *
  *   member:             type                                      size
- *   sequence            (industrial::shared_types::shared_int)    4  bytes
+ *   sequence            (uint32_t)                                 4  bytes
  *   joints              (industrial::joint_data)                  40 bytes
- *   velocity            (industrial::shared_types::shared_real)   4  bytes
- *   duration            (industrial::shared_types::shared_real)   4  bytes
+ *   velocity            (float)                                    4  bytes
+ *   duration            (float)                                    4  bytes
  *
  *
  * THIS CLASS IS NOT THREAD-SAFE
@@ -115,8 +113,8 @@ public:
    * \brief Initializes a complete trajectory point
    *
    */
-  void init(industrial::shared_types::shared_int sequence, industrial::joint_data::JointData & position,
-            industrial::shared_types::shared_real velocity, industrial::shared_types::shared_real duration);
+  void init(uint32_t sequence, industrial::joint_data::JointData & position,
+            float velocity, float duration);
 
   /**
    * \brief Sets joint position data
@@ -143,7 +141,7 @@ public:
    *
    * \param sequence value
    */
-  void setSequence(industrial::shared_types::shared_int sequence)
+  void setSequence(uint32_t sequence)
   {
     this->sequence_ = sequence;
   }
@@ -153,7 +151,7 @@ public:
    *
    * \return joint trajectory sequence number
    */
-  industrial::shared_types::shared_int getSequence()
+  uint32_t getSequence()
   {
     return this->sequence_;
   }
@@ -163,7 +161,7 @@ public:
    *
    * \param velocity value
    */
-  void setVelocity(industrial::shared_types::shared_real velocity)
+  void setVelocity(float velocity)
   {
     this->velocity_ = velocity;
   }
@@ -173,7 +171,7 @@ public:
    *
    * \return joint trajectory velocity
    */
-  industrial::shared_types::shared_real getVelocity()
+  float getVelocity()
   {
     return this->velocity_;
   }
@@ -183,7 +181,7 @@ public:
      *
      * \param velocity value
      */
-    void setDuration(industrial::shared_types::shared_real duration)
+    void setDuration(float duration)
     {
       this->duration_ = duration;
     }
@@ -193,7 +191,7 @@ public:
      *
      * \return joint trajectory velocity
      */
-    industrial::shared_types::shared_real getDuration()
+    float getDuration()
     {
       return this->duration_;
     }
@@ -217,7 +215,7 @@ public:
   bool unload(industrial::byte_array::ByteArray *buffer);
   unsigned int byteLength()
   {
-    return sizeof(industrial::shared_types::shared_real) + sizeof(industrial::shared_types::shared_int)
+    return sizeof(float) + sizeof(uint32_t)
         + this->joint_position_.byteLength();
   }
 
@@ -230,16 +228,16 @@ private:
   /**
    * \brief joint point velocity
    */
-  industrial::shared_types::shared_real velocity_;
+  float velocity_;
   /**
    * \brief trajectory sequence number
    */
-  industrial::shared_types::shared_int sequence_;
+  uint32_t sequence_;
 
   /**
    * \brief joint move duration
    */
-  industrial::shared_types::shared_real duration_;
+  float duration_;
 
 };
 

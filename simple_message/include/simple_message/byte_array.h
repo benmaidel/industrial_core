@@ -32,15 +32,10 @@
 #ifndef BYTE_ARRAY_H
 #define BYTE_ARRAY_H
 
-#ifndef FLATHEADERS
-#include "simple_message/shared_types.h"
-#else
-#include "shared_types.h"
-#endif
-
 #include <deque>
 #include <vector>
-#include "string.h"
+#include <string>
+#include <stdint.h>
 
 namespace industrial
 {
@@ -117,7 +112,7 @@ public:
    *
    * \return true on success, false otherwise (max array size exceeded).
    */
-  bool init(const char* buffer, const industrial::shared_types::shared_int byte_size);
+  bool init(const char* buffer, const uint32_t byte_size);
 
   /**
    * \brief Deep-Copy
@@ -148,30 +143,23 @@ public:
    * \return true on success, false otherwise (max array size exceeded).
    * Value not loaded
    */
-  bool load(industrial::shared_types::shared_bool value);
+  bool load(bool value);
 
-  /**
-   * \brief loads a float on the byte array.  If byte swapping is
-   * enabled, then the bytes are swapped (this assumes a common float
-   * representation)
-   *
-   * \param value to load
-   *
-   * \return true on success, false otherwise (max array size exceeded).
-   * Value not loaded
-   */
-  bool load(industrial::shared_types::shared_real value);
+  bool load(uint8_t value);
 
-  /**
-   * \brief loads an integer into the byte array.  If byte swapping is
-   * enabled, then the bytes are swapped.
-   *
-   * \param value to load
-   *
-   * \return true on success, false otherwise (max array size exceeded).
-   * Value not loaded
-   */
-  bool load(industrial::shared_types::shared_int value);
+  bool load(uint16_t value);
+
+  bool load(uint32_t value);
+
+  bool load(int8_t value);
+
+  bool load(int16_t value);
+
+  bool load(int32_t value);
+
+  bool load(float value);
+
+  bool load(double value);
 
   /**
    * \brief loads a complex SimpleSerialize into the byte array
@@ -203,7 +191,7 @@ public:
    * \return true on success, false otherwise (max array size exceeded).
    * Value not loaded
    */
-  bool load(void* value, const industrial::shared_types::shared_int byte_size);
+  bool load(void* value, const uint32_t byte_size);
 
   /**
    * \brief unloads a boolean value from the byte array
@@ -212,27 +200,23 @@ public:
    *
    * \return true on success, false otherwise (array is empty)
    */
-  bool unload(industrial::shared_types::shared_bool &value);
+  bool unload(bool &value);
 
-  /**
-   * \brief unloads a double value from the byte array. If byte swapping is
-   * enabled, then the bytes are swapped.
-   *
-   * \param value value to unload
-   *
-   * \return true on success, false otherwise (array is empty)
-   */
-  bool unload(industrial::shared_types::shared_real &value);
+  bool unload(uint8_t &value);
 
-  /**
-   * \brief unloads an integer value from the byte array.  If byte swapping is
-   * enabled, then the bytes are swapped.
-   *
-   * \param value value to unload
-   *
-   * \return true on success, false otherwise (array is empty)
-   */
-  bool unload(industrial::shared_types::shared_int &value);
+  bool unload(uint16_t &value);
+
+  bool unload(uint32_t &value);
+
+  bool unload(int8_t &value);
+
+  bool unload(int16_t &value);
+
+  bool unload(int32_t &value);
+
+  bool unload(float &value);
+
+  bool unload(double &value);
 
   /**
    * \brief unloads a complex SimpleSerialize value from the byte array
@@ -252,7 +236,7 @@ public:
    *
    * \return true on success, false otherwise (array is empty)
    */
-  bool unload(ByteArray &value, const industrial::shared_types::shared_int byte_size);
+  bool unload(ByteArray &value, const uint32_t byte_size);
 
   /**
    * \brief unloads a void* (treated as char*) from the byte array.
@@ -263,27 +247,36 @@ public:
    *
    * \return true on success, false otherwise (array is empty)
    */
-  bool unload(void* value, const industrial::shared_types::shared_int byteSize);
+  bool unload(void* value, const uint32_t byteSize);
+
+  bool unloadFront(bool &value);
+
+  bool unloadFront(uint8_t &value);
+
+  bool unloadFront(uint16_t &value);
+
+  bool unloadFront(uint32_t &value);
+
+  bool unloadFront(int8_t &value);
+
+  bool unloadFront(int16_t &value);
+
+  bool unloadFront(int32_t &value);
+
+  bool unloadFront(float &value);
+
+  bool unloadFront(double &value);
 
   /**
-   * \brief unloads a double value from the beginning of the byte array.
-   * If byte swapping is enabled, then the bytes are swapped.
+   * \brief unloads a partial byte array from the byte array into the
+   * passed in byte array (this is done using the byte array load method
+   * so any data in the passed in byte array remains intact)
    *
    * \param value value to unload
    *
    * \return true on success, false otherwise (array is empty)
    */
-  bool unloadFront(industrial::shared_types::shared_real &value);
-
-  /**
-   * \brief unloads an integer value from the beginning of the byte array.
-   * If byte swapping is enabled, then the bytes are swapped
-   *
-   * \param value value to unload
-   *
-   * \return true on success, false otherwise (array is empty)
-   */
-  bool unloadFront(industrial::shared_types::shared_int &value);
+  bool unloadFront(ByteArray &value, const uint32_t byte_size);
 
   /**
    * \brief unloads a void* (treated as char*) from the beginning of the array.
@@ -294,7 +287,7 @@ public:
    *
    * \return true on success, false otherwise (array is empty)
    */
-  bool unloadFront(void* value, const industrial::shared_types::shared_int byteSize);
+  bool unloadFront(void* value, const uint32_t byteSize);
 
   /**
    * \brief returns a char* pointer to the raw data.
@@ -305,7 +298,7 @@ public:
    *
    * \return char* pointer to the raw data
    */
-   __attribute__((deprecated("This ptr will be invalid once buffer is changed.  Please use: copyTo(vector<char>) instead.")))
+  __attribute__((deprecated("This ptr will be invalid once buffer is changed.  Please use: copyTo(vector<char>) instead.")))
   char* getRawDataPtr();
 
   /**
@@ -337,11 +330,11 @@ private:
    * \brief internal data buffer
    */
   std::deque<char> buffer_;
-  
+
   /**
    * \brief temporary continuous buffer for getRawDataPtr() use
    */
-   std::vector<char> getRawDataPtr_buffer_;
+  std::vector<char> getRawDataPtr_buffer_;
 
 #ifdef BYTE_SWAPPING
   /**
@@ -351,7 +344,7 @@ private:
    * \param byteSize (in bytes)
    *
    */
-  void swap(void *value, industrial::shared_types::shared_int byteSize);
+  void swap(void *value, uint32_t byteSize);
 #endif
 
 };

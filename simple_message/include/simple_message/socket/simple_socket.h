@@ -34,11 +34,9 @@
 
 #ifndef FLATHEADERS
 #include "simple_message/log_wrapper.h"
-#include "simple_message/shared_types.h"
 #include "simple_message/smpl_msg_connection.h"
 #else
 #include "log_wrapper.h"
-#include "shared_types.h"
 #include "smpl_msg_connection.h"
 #endif
 
@@ -160,15 +158,15 @@ public:
   {
     return connected_;
   }
-  
+
   // Internally set the state of the connection to be disconnected.
-  // This is needed in UDP connections to signal when a timeout has occurred 
+  // This is needed in UDP connections to signal when a timeout has occurred
   // and the connection needs to be reestablished using the handshake protocol.
   virtual void setDisconnected()
   {
     setConnected(false);
   }
-  
+
   /**
    * \brief returns true if socket data is ready to receive
    *
@@ -194,7 +192,7 @@ protected:
    * \brief address/port of remote socket
    */
   sockaddr_in sockaddr_;
-  
+
   /**
    * \brief flag indicating socket connection status
    */
@@ -255,17 +253,17 @@ protected:
   {
     LOG_ERROR("%s, rc: %d. Error: '%s' (errno: %d)", msg, rc, strerror(error_no), error_no);
   }
-  
+
   // Send/Receive functions (inherited classes should override raw methods
   // Virtual
   bool sendBytes(industrial::byte_array::ByteArray & buffer);
   bool receiveBytes(industrial::byte_array::ByteArray & buffer,
-      industrial::shared_types::shared_int num_bytes);
+      uint32_t num_bytes);
   // Virtual
   virtual int rawSendBytes(char *buffer,
-      industrial::shared_types::shared_int num_bytes)=0;
+      uint32_t num_bytes)=0;
   virtual int rawReceiveBytes(char *buffer,
-      industrial::shared_types::shared_int num_bytes)=0;
+      uint32_t num_bytes)=0;
   /**
    * \brief polls socket for data or error
    *

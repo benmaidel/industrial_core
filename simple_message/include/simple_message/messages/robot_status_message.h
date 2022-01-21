@@ -35,12 +35,10 @@
 #ifndef FLATHEADERS
 #include "simple_message/typed_message.h"
 #include "simple_message/simple_message.h"
-#include "simple_message/shared_types.h"
 #include "simple_message/robot_status.h"
 #else
 #include "typed_message.h"
 #include "simple_message.h"
-#include "shared_types.h"
 #include "robot_status.h"
 #endif
 
@@ -110,7 +108,7 @@ public:
   {
     return this->status_.byteLength();
   }
-  
+
 
   industrial::robot_status::RobotStatus status_;
 

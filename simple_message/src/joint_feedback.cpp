@@ -30,16 +30,13 @@
  */
 #ifndef FLATHEADERS
 #include "simple_message/joint_feedback.h"
-#include "simple_message/shared_types.h"
 #include "simple_message/log_wrapper.h"
 #else
 #include "joint_feedback.h"
-#include "shared_types.h"
 #include "log_wrapper.h"
 #endif
 
 using namespace industrial::joint_data;
-using namespace industrial::shared_types;
 
 namespace industrial
 {
@@ -65,9 +62,9 @@ void JointFeedback::init()
   this->accelerations_.init();
 }
 
-void JointFeedback::init(industrial::shared_types::shared_int robot_id,
-          industrial::shared_types::shared_int valid_fields,
-          industrial::shared_types::shared_real time,
+void JointFeedback::init(uint32_t robot_id,
+          uint32_t valid_fields,
+          float time,
           industrial::joint_data::JointData & positions,
           industrial::joint_data::JointData & velocities,
           industrial::joint_data::JointData & accelerations)

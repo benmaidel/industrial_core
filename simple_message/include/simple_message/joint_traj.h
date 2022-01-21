@@ -35,12 +35,10 @@
 #ifndef FLATHEADERS
 #include "simple_message/simple_message.h"
 #include "simple_message/simple_serialize.h"
-#include "simple_message/shared_types.h"
 #include "simple_message/joint_traj_pt.h"
 #else
 #include "simple_message.h"
 #include "simple_serialize.h"
-#include "shared_types.h"
 #include "joint_traj_pt.h"
 #endif
 
@@ -106,14 +104,14 @@ public:
 	 *
 	 * \return true if value set, otherwise false (index greater than size)
 	 */
-	bool getPoint(industrial::shared_types::shared_int index,
+	bool getPoint(uint32_t index,
 			industrial::joint_traj_pt::JointTrajPt & point);
 	/**
 	 * \brief Gets a size of trajectory
 	 *
 	 * \return trajectory size
 	 */
-	industrial::shared_types::shared_int size()
+	uint32_t size()
 	{
 		return this->size_;
 	}
@@ -166,7 +164,7 @@ private:
 	/**
 	 * \brief maximum number of joints positions that can be held in the message.
 	 */
-	static const industrial::shared_types::shared_int MAX_NUM_POINTS = 200;
+	static const uint32_t MAX_NUM_POINTS = 200;
 	/**
 	 * \brief internal data buffer
 	 */
@@ -174,7 +172,7 @@ private:
 	/**
 	 * \brief size of trajectory
 	 */
-	industrial::shared_types::shared_int size_;
+	uint32_t size_;
 
 };
 

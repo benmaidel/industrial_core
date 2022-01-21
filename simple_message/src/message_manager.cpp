@@ -154,7 +154,7 @@ void MessageManager::spinOnce()
       if (CommTypes::SERVICE_REQUEST == msg.getCommType())
       {
         simple_message::SimpleMessage fail;
-        fail.init(msg.getMessageType(), CommTypes::SERVICE_REPLY, ReplyTypes::FAILURE);
+        fail.init(msg.getMessageType(), 0, 0, CommTypes::SERVICE_REPLY, ReplyTypes::FAILURE);
         this->getConnection()->sendMsg(fail);
         LOG_WARN("Unhandled message type encounters, sending failure reply");
       }

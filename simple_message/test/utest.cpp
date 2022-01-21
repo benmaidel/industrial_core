@@ -31,7 +31,6 @@
 
 #include "simple_message/simple_message.h"
 #include "simple_message/byte_array.h"
-#include "simple_message/shared_types.h"
 #include "simple_message/smpl_msg_connection.h"
 #include "simple_message/socket/udp_client.h"
 #include "simple_message/socket/udp_server.h"
@@ -50,14 +49,13 @@
 
 #include <gtest/gtest.h>
 // Use pthread instead of boost::thread so we can cancel the TCP/UDP server
-// threads 
+// threads
 //#include <boost/thread/thread.hpp>
 #include <pthread.h>
 #include <limits>
 
 using namespace industrial::simple_message;
 using namespace industrial::byte_array;
-using namespace industrial::shared_types;
 using namespace industrial::smpl_msg_connection;
 using namespace industrial::udp_socket;
 using namespace industrial::udp_client;
@@ -83,19 +81,19 @@ using namespace industrial::joint_traj;
 TEST(ByteArraySuite, init)
 {
 
-  const shared_int SIZE = 100;
+  const int32_t SIZE = 100;
 
   ByteArray bytes;
   char buffer[SIZE];
 
   // Valid byte arrays
   EXPECT_TRUE(bytes.init(&buffer[0], SIZE));
-  EXPECT_EQ((shared_int)bytes.getBufferSize(), SIZE);
+  EXPECT_EQ((int32_t)bytes.getBufferSize(), SIZE);
 
   // Invalid init (too big)
-  if (bytes.getMaxBufferSize() < std::numeric_limits<shared_int>::max())
+  if (bytes.getMaxBufferSize() < std::numeric_limits<int32_t>::max())
   {
-      shared_int TOO_BIG = bytes.getMaxBufferSize()+1;
+      int32_t TOO_BIG = bytes.getMaxBufferSize()+1;
       char bigBuffer[TOO_BIG];
       EXPECT_FALSE(bytes.init(&bigBuffer[0], TOO_BIG));
   }
@@ -107,7 +105,7 @@ TEST(ByteArraySuite, init)
 
 TEST(ByteArraySuite, loading)
 {
-  const shared_int SIZE = 100;
+  const int32_t SIZE = 100;
   char buffer[SIZE];
 
   ByteArray bytes;
@@ -115,34 +113,34 @@ TEST(ByteArraySuite, loading)
 
   ASSERT_TRUE(bytes.init(&buffer[0], SIZE));
 
-  shared_bool bIN = true, bOUT = false;
-  shared_int iIN = 999, iOUT = 0;
-  shared_real rIN = 9999.9999, rOUT = 0;
+  bool bIN = true, bOUT = false;
+  int32_t iIN = 999, iOUT = 0;
+  float rIN = 9999.9999, rOUT = 0;
 
   // Boolean loading
   EXPECT_TRUE(bytes.load(bIN));
-  EXPECT_EQ(bytes.getBufferSize(), SIZE+sizeof(shared_bool));
+  EXPECT_EQ(bytes.getBufferSize(), SIZE+sizeof(bool));
   EXPECT_TRUE(bytes.unload(bOUT));
-  EXPECT_EQ((shared_int)bytes.getBufferSize(), SIZE);
+  EXPECT_EQ((int32_t)bytes.getBufferSize(), SIZE);
   EXPECT_EQ(bOUT, bIN);
 
   // Integer loading
   EXPECT_TRUE(bytes.load(iIN));
-  EXPECT_EQ(bytes.getBufferSize(), SIZE+sizeof(shared_int));
+  EXPECT_EQ(bytes.getBufferSize(), SIZE+sizeof(int32_t));
   EXPECT_TRUE(bytes.unload(iOUT));
-  EXPECT_EQ((shared_int)bytes.getBufferSize(), SIZE);
+  EXPECT_EQ((int32_t)bytes.getBufferSize(), SIZE);
   EXPECT_EQ(iOUT, iIN);
 
   // Real loading
   EXPECT_TRUE(bytes.load(rIN));
-  EXPECT_EQ(bytes.getBufferSize(), SIZE+sizeof(shared_real));
+  EXPECT_EQ(bytes.getBufferSize(), SIZE+sizeof(float));
   EXPECT_TRUE(bytes.unload(rOUT));
-  EXPECT_EQ((shared_int)bytes.getBufferSize(), SIZE);
+  EXPECT_EQ((int32_t)bytes.getBufferSize(), SIZE);
   EXPECT_EQ(rOUT, rIN);
 
   // Unloading a single member (down to an empty buffer size)
   EXPECT_TRUE(empty.load(bIN));
-  EXPECT_EQ(empty.getBufferSize(), sizeof(shared_bool));
+  EXPECT_EQ(empty.getBufferSize(), sizeof(bool));
   EXPECT_TRUE(empty.unload(bOUT));
   EXPECT_EQ((int)empty.getBufferSize(), 0);
   EXPECT_EQ(bOUT, bIN);
@@ -151,9 +149,9 @@ TEST(ByteArraySuite, loading)
   rOUT = 0.0;
   iOUT = 0;
   EXPECT_TRUE(empty.load(rIN));
-  EXPECT_EQ(empty.getBufferSize(), sizeof(shared_real));
+  EXPECT_EQ(empty.getBufferSize(), sizeof(float));
   EXPECT_TRUE(empty.load(iIN));
-  EXPECT_EQ(empty.getBufferSize(), sizeof(shared_real)+sizeof(shared_int));
+  EXPECT_EQ(empty.getBufferSize(), sizeof(float)+sizeof(int32_t));
   EXPECT_TRUE(empty.unloadFront(rOUT));
   EXPECT_EQ(rOUT, rIN);
   EXPECT_TRUE(empty.unload(iOUT));
@@ -181,8 +179,8 @@ TEST(ByteArraySuite, byteSwapping)
 
     };
     const unsigned int bufferLength = 32;
-    shared_int tempInt;
-    shared_real tempReal;
+    int32_t tempInt;
+    float tempReal;
 
     swapped.init((const char*) buffer, bufferLength);
     ASSERT_EQ(swapped.getBufferSize(), bufferLength);
@@ -219,7 +217,7 @@ TEST(ByteArraySuite, byteSwapping)
 TEST(ByteArraySuite, copy)
 {
 
-  const shared_int SIZE = 100;
+  const int32_t SIZE = 100;
   char buffer[SIZE];
 
   // Copy
@@ -228,21 +226,21 @@ TEST(ByteArraySuite, copy)
 
   EXPECT_TRUE(copyFrom.init(&buffer[0], SIZE));
   EXPECT_TRUE(copyTo.load(copyFrom));
-  EXPECT_EQ((shared_int)copyTo.getBufferSize(), SIZE);
+  EXPECT_EQ((int32_t)copyTo.getBufferSize(), SIZE);
   EXPECT_TRUE(copyTo.load(copyFrom));
-  EXPECT_EQ((shared_int)copyTo.getBufferSize(), 2*SIZE);
+  EXPECT_EQ((int32_t)copyTo.getBufferSize(), 2*SIZE);
 
   // Copy too large
   ByteArray tooBig;
-  if (tooBig.getMaxBufferSize()-1 <= std::numeric_limits<shared_int>::max())
+  if (tooBig.getMaxBufferSize()-1 <= std::numeric_limits<int32_t>::max())
   {
-      shared_int TOO_BIG = tooBig.getMaxBufferSize()-1;
+      int32_t TOO_BIG = tooBig.getMaxBufferSize()-1;
       char bigBuffer[TOO_BIG];
 
       EXPECT_TRUE(tooBig.init(&bigBuffer[0], TOO_BIG));
       EXPECT_FALSE(copyTo.load(tooBig));
       // A failed load should not change the buffer.
-      EXPECT_EQ((shared_int)copyTo.getBufferSize(), 2*SIZE);
+      EXPECT_EQ((int32_t)copyTo.getBufferSize(), 2*SIZE);
   }
   else
       std::cout << std::string(15, ' ')
@@ -262,7 +260,7 @@ class TestClient : public TcpClient
 class TestServer : public TcpServer
 {
   public:
-  bool receiveBytes(ByteArray & buffer, shared_int num_bytes)
+  bool receiveBytes(ByteArray & buffer, int32_t num_bytes)
   {
     return TcpServer::receiveBytes(buffer, num_bytes);
   }
@@ -279,7 +277,7 @@ class TestClient : public UdpClient
 class TestServer : public UdpServer
 {
   public:
-  bool receiveBytes(ByteArray & buffer, shared_int num_bytes)
+  bool receiveBytes(ByteArray & buffer, uint32_t num_bytes)
   {
     return UdpServer::receiveBytes(buffer, num_bytes);
   }
@@ -289,7 +287,7 @@ class TestServer : public UdpServer
 void*
 connectServerFunc(void* arg)
 {
-  TestServer* server = (TestServer*)arg;  
+  TestServer* server = (TestServer*)arg;
   server->makeConnect();
   return NULL;
 }
@@ -302,9 +300,9 @@ TEST(SocketSuite, read)
   TestClient client;
   TestServer server;
   ByteArray send, recv;
-  shared_int DATA = 99;
-  shared_int TWO_INTS = 2 * sizeof(shared_int);
-  shared_int ONE_INTS = 1 * sizeof(shared_int);
+  int32_t DATA = 99;
+  int32_t TWO_INTS = 2 * sizeof(int32_t);
+  int32_t ONE_INTS = 1 * sizeof(int32_t);
 
   // Construct server
   ASSERT_TRUE(server.init(port));
@@ -341,7 +339,7 @@ TEST(SocketSuite, read)
 void*
 spinSender(void* arg)
 {
-  TestClient* client = (TestClient*)arg;  
+  TestClient* client = (TestClient*)arg;
   ByteArray send;
   const int DATA = 256;
 

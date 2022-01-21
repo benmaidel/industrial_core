@@ -30,11 +30,9 @@
  */
 #ifndef FLATHEADERS
 #include "simple_message/robot_status.h"
-#include "simple_message/shared_types.h"
 #include "simple_message/log_wrapper.h"
 #else
 #include "robot_status.h"
-#include "shared_types.h"
 #include "log_wrapper.h"
 #endif
 
@@ -44,8 +42,6 @@
 #include "industrial_msgs/RobotMode.h"
 #include "industrial_msgs/TriState.h"
 #endif
-
-using namespace industrial::shared_types;
 
 namespace industrial
 {
@@ -124,7 +120,7 @@ void RobotStatus::init()
              TriStates::TS_UNKNOWN, RobotModes::UNKNOWN, TriStates::TS_UNKNOWN);
 }
 
-void RobotStatus::init(TriState drivesPowered, TriState eStopped, industrial::shared_types::shared_int errorCode,
+void RobotStatus::init(TriState drivesPowered, TriState eStopped, int32_t errorCode,
                        TriState inError, TriState inMotion, RobotMode mode, TriState motionPossible)
 {
   this->setDrivesPowered(drivesPowered);

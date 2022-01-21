@@ -30,15 +30,12 @@
  */
 #ifndef FLATHEADERS
 #include "simple_message/joint_traj.h"
-#include "simple_message/shared_types.h"
 #include "simple_message/log_wrapper.h"
 #else
 #include "joint_traj.h"
-#include "shared_types.h"
 #include "log_wrapper.h"
 #endif
 
-using namespace industrial::shared_types;
 using namespace industrial::joint_traj_pt;
 
 namespace industrial
@@ -60,7 +57,7 @@ void JointTraj::init()
 	JointTrajPt empty;
 
 	this->size_ = 0;
-	for (shared_int i = 0; i < this->getMaxNumPoints(); i++)
+	for (int i = 0; i < this->getMaxNumPoints(); i++)
 	{
 		this->points_[i].copyFrom(empty);
 	}
@@ -85,7 +82,7 @@ bool JointTraj::addPoint(JointTrajPt & point)
 	return rtn;
 }
 
-bool JointTraj::getPoint(shared_int index, JointTrajPt & point)
+bool JointTraj::getPoint(uint32_t index, JointTrajPt & point)
 {
 	bool rtn = false;
 
@@ -107,7 +104,7 @@ void JointTraj::copyFrom(JointTraj &src)
 	JointTrajPt value;
 
 	this->size_ = src.size();
-	for (shared_int i = 0; i < this->size(); i++)
+	for (int i = 0; i < this->size(); i++)
 	{
 		src.getPoint(i, value);
 		this->points_[i].copyFrom(value);
@@ -120,7 +117,7 @@ bool JointTraj::operator==(JointTraj &rhs)
 
 	if(this->size() == rhs.size())
 	{
-		for(shared_int i = 0; i < this->size(); i++)
+		for(int i = 0; i < this->size(); i++)
 		{
 			JointTrajPt value;
 			rhs.getPoint(i, value);
@@ -152,7 +149,7 @@ bool JointTraj::load(industrial::byte_array::ByteArray *buffer)
 	JointTrajPt value;
 
 	LOG_COMM("Executing joint trajectory load");
-	for (shared_int i = 0; i < this->size(); i++)
+	for (int i = 0; i < this->size(); i++)
 	{
 		this->getPoint(i, value);
 		rtn = buffer->load(value);

@@ -35,12 +35,10 @@
 #ifndef FLATHEADERS
 #include "simple_message/typed_message.h"
 #include "simple_message/simple_message.h"
-#include "simple_message/shared_types.h"
 #include "simple_message/joint_traj_pt.h"
 #else
 #include "typed_message.h"
 #include "simple_message.h"
-#include "shared_types.h"
 #include "joint_traj_pt.h"
 #endif
 
@@ -115,7 +113,7 @@ public:
    *
    * \param message sequence number
    */
-  void setSequence(industrial::shared_types::shared_int sequence) { point_.setSequence(sequence); }
+  void setSequence(uint32_t sequence) { point_.setSequence(sequence); }
 
   industrial::joint_traj_pt::JointTrajPt point_;
 

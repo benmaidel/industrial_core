@@ -35,12 +35,10 @@
 #ifndef FLATHEADERS
 #include "simple_message/typed_message.h"
 #include "simple_message/simple_message.h"
-#include "simple_message/shared_types.h"
 #include "simple_message/joint_data.h"
 #else
 #include "typed_message.h"
 #include "simple_message.h"
-#include "shared_types.h"
 #include "joint_data.h"
 #endif
 
@@ -74,7 +72,7 @@ typedef SpecialSeqValues::SpecialSeqValue SpecialSeqValue;
  * to highest). The standard sizes are given, but can change based on type sizes:
  *
  *   member:             type                                      size
- *   sequence            (industrial::shared_types::shared_int)    4  bytes
+ *   sequence            (uint32_t)    4  bytes
  *   joints              (industrial::joint_data)                  40 bytes
  *
  *
@@ -113,7 +111,7 @@ public:
    * \param joints
    *
    */
-  void init(industrial::shared_types::shared_int seq, industrial::joint_data::JointData & joints);
+  void init(uint32_t seq, industrial::joint_data::JointData & joints);
 
   /**
    * \brief Initializes a new joint message
@@ -126,14 +124,14 @@ public:
    *
    * \param message sequence number
    */
-  void setSequence(industrial::shared_types::shared_int sequence);
+  void setSequence(uint32_t sequence);
 
   /**
    * \brief returns the maximum message sequence number
    *
    * \return message sequence number
    */
-  industrial::shared_types::shared_int getSequence()
+  uint32_t getSequence()
   {
     return sequence_;
   }
@@ -154,14 +152,14 @@ public:
 
   unsigned int byteLength()
   {
-    return sizeof(industrial::shared_types::shared_int) + this->joints_.byteLength();
+    return sizeof(uint32_t) + this->joints_.byteLength();
   }
 
 private:
   /**
    * \brief sequence number (for those joints messages that require it)
    */
-  industrial::shared_types::shared_int sequence_;
+  uint32_t sequence_;
   /**
    * \brief maximum number of joints positions that can be held in the message.
    */

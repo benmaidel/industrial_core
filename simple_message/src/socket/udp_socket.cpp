@@ -43,7 +43,6 @@
 using namespace industrial::smpl_msg_connection;
 using namespace industrial::byte_array;
 using namespace industrial::simple_message;
-using namespace industrial::shared_types;
 
 namespace industrial
 {
@@ -65,18 +64,18 @@ UdpSocket::~UdpSocket()
   CLOSE(this->getSockHandle());
 }
 
-int UdpSocket::rawSendBytes(char *buffer, shared_int num_bytes)
+int UdpSocket::rawSendBytes(char *buffer, uint32_t num_bytes)
 {
   int rc = this->SOCKET_FAIL;
 
   rc = SEND_TO(this->getSockHandle(), buffer,
         num_bytes, 0, (sockaddr *)&this->sockaddr_,
         sizeof(this->sockaddr_));
-  
+
   return rc;
 }
 
-int UdpSocket::rawReceiveBytes(char *buffer, shared_int num_bytes)
+int UdpSocket::rawReceiveBytes(char *buffer, uint32_t num_bytes)
 {
   int rc, len_cpy;
   SOCKLEN_T addrSize;

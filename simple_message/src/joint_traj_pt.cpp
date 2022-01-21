@@ -30,16 +30,13 @@
  */
 #ifndef FLATHEADERS
 #include "simple_message/joint_traj_pt.h"
-#include "simple_message/shared_types.h"
 #include "simple_message/log_wrapper.h"
 #else
 #include "joint_traj_pt.h"
-#include "shared_types.h"
 #include "log_wrapper.h"
 #endif
 
 using namespace industrial::joint_data;
-using namespace industrial::shared_types;
 
 namespace industrial
 {
@@ -63,7 +60,7 @@ void JointTrajPt::init()
   this->duration_ = 0.0;
 }
 
-void JointTrajPt::init(shared_int sequence, JointData & position, shared_real velocity, shared_real duration)
+void JointTrajPt::init(uint32_t sequence, JointData & position, float velocity, float duration)
 {
   this->setJointPosition(position);
   this->setSequence(sequence);
