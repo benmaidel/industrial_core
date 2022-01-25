@@ -59,18 +59,19 @@ bool SmplMsgConnection::sendMsg(SimpleMessage & message)
   ByteArray sendBuffer;
   ByteArray msgData;
 
-  //Load the start tag to the byte array
-  sendBuffer.load((void *)&message.START_TAG, 4);
-
+  sendBuffer.init();
   if (message.validateMessage())
   {
-    message.toByteArray(msgData);
-    sendBuffer.load((int)msgData.getBufferSize());
-    sendBuffer.load(msgData);
-    rtn = this->sendBytes(sendBuffer);
+    //Load the start tag to the byte array
+    for(int i = 0; i < message.START_TAG.size(); i++)
+      sendBuffer.load((void *)&message.START_TAG[i], sizeof(char));
 
+    message.toByteArray(msgData);
+    sendBuffer.load(msgData);
     //Attach the end tag to the end of the byte array
-    sendBuffer.load((void *)&message.END_TAG, 4);
+    for(int i = 0; i < message.END_TAG.size(); i++)
+      sendBuffer.load((void *)&message.END_TAG[i], sizeof(char));
+    rtn = this->sendBytes(sendBuffer);
   }
   else
   {
@@ -96,10 +97,12 @@ bool SmplMsgConnection::receiveMsg(SimpleMessage &message)
 
   if (rtn)
   {
+    std::vector<char> tag;
+    tagBuffer.copyTo(tag);
     //validate the start tag
-    if(strcmp(message.START_TAG, tagBuffer.getRawDataPtr()) != 0)
+    if(!(message.START_TAG == tag))
     {
-      LOG_ERROR("Received message did not start with the correct start tag. Expected: %s, Received: %s", message.START_TAG, tagBuffer.getRawDataPtr());
+      LOG_ERROR("Received message did not start with the correct start tag.");
       return false;
     }
 
@@ -110,24 +113,34 @@ bool SmplMsgConnection::receiveMsg(SimpleMessage &message)
       rtn = message.init(headerBuffer);
       if (rtn)
       {
-        rtn = this->receiveBytes(msgBuffer, message.getPayloadLength());
-        if (rtn)
+        ROS_DEBUG_STREAM("received header: " <<std::endl << message);
+        if(message.getPayloadLength() > 0)
         {
-          message.setData(msgBuffer);
-
-          //receive the end tag and validate it
-          tagBuffer.init();
-          rtn = this->receiveBytes(tagBuffer, 4);
-          if(strcmp(message.END_TAG, tagBuffer.getRawDataPtr()) != 0)
+          rtn = this->receiveBytes(msgBuffer, message.getPayloadLength());
+          if (rtn)
           {
-            LOG_ERROR("Received message did not end with the correct end tag. Expected: %s, Received: %s", message.END_TAG, tagBuffer.getRawDataPtr());
+            message.setData(msgBuffer);
+
+          }
+          else
+          {
+            LOG_ERROR("Failed to receive message payload");
             rtn = false;
           }
         }
-        else
+        if (rtn)
         {
-          LOG_ERROR("Failed to receive message payload");
-          rtn = false;
+          //receive the end tag and validate it
+          tagBuffer.init();
+          rtn = this->receiveBytes(tagBuffer, 4);
+          tag.clear();
+          tagBuffer.copyTo(tag);
+
+          if(!(message.END_TAG == tag))
+          {
+            LOG_ERROR("Received message did not end with the correct end tag.");
+            rtn = false;
+          }
         }
       }
       else
