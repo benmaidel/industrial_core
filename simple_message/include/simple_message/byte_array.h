@@ -151,11 +151,15 @@ public:
 
   bool load(uint32_t value);
 
+  bool load(uint64_t value);
+
   bool load(int8_t value);
 
   bool load(int16_t value);
 
   bool load(int32_t value);
+
+  bool load(int64_t value);
 
   bool load(float value);
 
@@ -208,11 +212,15 @@ public:
 
   bool unload(uint32_t &value);
 
+  bool unload(uint64_t &value);
+
   bool unload(int8_t &value);
 
   bool unload(int16_t &value);
 
   bool unload(int32_t &value);
+
+  bool unload(int64_t &value);
 
   bool unload(float &value);
 
@@ -257,11 +265,15 @@ public:
 
   bool unloadFront(uint32_t &value);
 
+  bool unloadFront(uint64_t &value);
+
   bool unloadFront(int8_t &value);
 
   bool unloadFront(int16_t &value);
 
   bool unloadFront(int32_t &value);
+
+  bool unloadFront(int64_t &value);
 
   bool unloadFront(float &value);
 

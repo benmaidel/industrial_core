@@ -176,6 +176,17 @@ bool ByteArray::load(uint32_t value)
   return this->load(&value, sizeof(uint32_t));
 }
 
+bool ByteArray::load(uint64_t value)
+{
+#ifdef BYTE_SWAPPING
+  LOG_COMM("Value (loading-input): %d", value);
+  this->swap(&value, sizeof(uint64_t));
+  LOG_COMM("Value (loading-output): %d", value);
+#endif
+
+  return this->load(&value, sizeof(uint64_t));
+}
+
 bool ByteArray::load(int8_t value)
 {
 #ifdef BYTE_SWAPPING
@@ -207,6 +218,17 @@ bool ByteArray::load(int32_t value)
 #endif
 
   return this->load(&value, sizeof(int32_t));
+}
+
+bool ByteArray::load(int64_t value)
+{
+#ifdef BYTE_SWAPPING
+  LOG_COMM("Value (loading-input): %d", value);
+  this->swap(&value, sizeof(int64_t));
+  LOG_COMM("Value (loading-output): %d", value);
+#endif
+
+  return this->load(&value, sizeof(int64_t));
 }
 
 bool ByteArray::load(float value)
@@ -338,6 +360,18 @@ bool ByteArray::unload(uint32_t &value)
   return rtn;
 }
 
+bool ByteArray::unload(uint64_t &value)
+{
+  bool rtn = this->unload(&value, sizeof(uint64_t));
+
+#ifdef BYTE_SWAPPING
+  LOG_COMM("Value (unloading-input): %d", value);
+  this->swap(&value, sizeof(uint64_t));
+  LOG_COMM("Value (unloading-output): %d", value);
+#endif
+  return rtn;
+}
+
 bool ByteArray::unload(int8_t &value)
 {
   bool rtn = this->unload(&value, sizeof(int8_t));
@@ -369,6 +403,18 @@ bool ByteArray::unload(int32_t &value)
 #ifdef BYTE_SWAPPING
   LOG_COMM("Value (unloading-input): %d", value);
   this->swap(&value, sizeof(int32_t));
+  LOG_COMM("Value (unloading-output): %d", value);
+#endif
+  return rtn;
+}
+
+bool ByteArray::unload(int64_t &value)
+{
+  bool rtn = this->unload(&value, sizeof(int64_t));
+
+#ifdef BYTE_SWAPPING
+  LOG_COMM("Value (unloading-input): %d", value);
+  this->swap(&value, sizeof(int64_t));
   LOG_COMM("Value (unloading-output): %d", value);
 #endif
   return rtn;
@@ -515,6 +561,18 @@ bool ByteArray::unloadFront(uint32_t &value)
   return rtn;
 }
 
+bool ByteArray::unloadFront(uint64_t &value)
+{
+  bool rtn = this->unloadFront(&value, sizeof(uint64_t));
+
+#ifdef BYTE_SWAPPING
+  LOG_COMM("Value (unloading-input): %d", value);
+  this->swap(&value, sizeof(uint64_t));
+  LOG_COMM("Value (unloading-output): %d", value);
+#endif
+  return rtn;
+}
+
 bool ByteArray::unloadFront(int8_t &value)
 {
   bool rtn = this->unloadFront(&value, sizeof(int8_t));
@@ -546,6 +604,18 @@ bool ByteArray::unloadFront(int32_t &value)
 #ifdef BYTE_SWAPPING
   LOG_COMM("Value (unloading-input): %d", value);
   this->swap(&value, sizeof(int32_t));
+  LOG_COMM("Value (unloading-output): %d", value);
+#endif
+  return rtn;
+}
+
+bool ByteArray::unloadFront(int64_t &value)
+{
+  bool rtn = this->unloadFront(&value, sizeof(int64_t));
+
+#ifdef BYTE_SWAPPING
+  LOG_COMM("Value (unloading-input): %d", value);
+  this->swap(&value, sizeof(int64_t));
   LOG_COMM("Value (unloading-output): %d", value);
 #endif
   return rtn;
