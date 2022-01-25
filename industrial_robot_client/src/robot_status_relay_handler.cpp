@@ -33,7 +33,6 @@
 #include "industrial_msgs/RobotStatus.h"
 #include "simple_message/log_wrapper.h"
 
-using namespace industrial::shared_types;
 using namespace industrial::smpl_msg_connection;
 using namespace industrial::simple_message;
 using namespace industrial::robot_status;
@@ -76,7 +75,7 @@ bool RobotStatusRelayHandler::internalCB(RobotStatusMessage & in)
   status.in_motion.val = TriStates::toROSMsgEnum(in.status_.getInMotion());
   status.mode.val = RobotModes::toROSMsgEnum(in.status_.getMode());
   status.motion_possible.val = TriStates::toROSMsgEnum(in.status_.getMotionPossible());
-  
+
   this->pub_robot_status_.publish(status);
 
   // Reply back to the controller if the sender requested it.

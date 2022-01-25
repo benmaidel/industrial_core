@@ -1,5 +1,5 @@
 /*
-* Software License Agreement (BSD License) 
+* Software License Agreement (BSD License)
 *
 * Copyright (c) 2011, Southwest Research Institute
 * All rights reserved.
@@ -12,7 +12,7 @@
 * 	* Redistributions in binary form must reproduce the above copyright
 * 	notice, this list of conditions and the following disclaimer in the
 * 	documentation and/or other materials provided with the distribution.
-* 	* Neither the name of the Southwest Research Institute, nor the names 
+* 	* Neither the name of the Southwest Research Institute, nor the names
 *	of its contributors may be used to endorse or promote products derived
 *	from this software without specific prior written permission.
 *
@@ -27,14 +27,13 @@
 * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 * POSSIBILITY OF SUCH DAMAGE.
-*/ 
+*/
 
 #include <algorithm>
 
 #include "industrial_robot_client/joint_relay_handler.h"
 #include "simple_message/log_wrapper.h"
 
-using industrial::shared_types::shared_real;
 using industrial::smpl_msg_connection::SmplMsgConnection;
 using namespace industrial::simple_message;
 
@@ -103,9 +102,9 @@ bool JointRelayHandler::create_messages(JointMessage& msg_in,
   std::vector<double> all_joint_pos(all_joint_names_.size());
   for (int i=0; i<all_joint_names_.size(); ++i)
   {
-    shared_real value;
+    float value;
     if (msg_in.getJoints().getJoint(i, value))
-      all_joint_pos[i] = value;
+      all_joint_pos[i] = static_cast<double>(value);
     else
       LOG_ERROR("Failed to parse #%d value from JointMessage", i);
   }
