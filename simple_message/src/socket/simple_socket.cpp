@@ -130,14 +130,14 @@ namespace industrial
               if (this->SOCKET_FAIL == rc)
               {
                 this->logSocketError("Socket received failed", rc, errno);
-		        remainBytes = 0;
+                remainBytes = 0;
                 rtn = false;
                 break;
               }
               else if (0 == rc)
               {
                 LOG_WARN("Recieved zero bytes: %u", rc);
-		        remainBytes = 0;
+                remainBytes = 0;
                 rtn = false;
                 break;
               }
