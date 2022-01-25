@@ -334,11 +334,16 @@ private:
    * \brief Size(in bytes) of message header (fixed)
    */
 	static const uint32_t HEADER_SIZE =
-      sizeof(uint8_t) * 8 +
-      sizeof(uint16_t) * 2 +
-      sizeof(uint32_t) +
-      sizeof(char) * 10 +
-      sizeof(uint32_t) * 2;
+      sizeof(uint32_t) +  //payload_length
+      sizeof(uint16_t) +  //message_type
+      sizeof(char) * 10 + //message_string
+      sizeof(uint8_t) +   //version_major
+      sizeof(uint8_t) +   //version_minor
+      sizeof(uint16_t) +  //seq
+      sizeof(uint32_t) +  //timestamp_sec_
+      sizeof(uint32_t) +  //timestamp_nsec_
+      sizeof(uint8_t) +   //comm_type_
+      sizeof(uint8_t);    //reply_code_
 
   /**
    * \brief Sets message type
