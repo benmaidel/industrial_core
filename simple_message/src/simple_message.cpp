@@ -73,11 +73,15 @@ bool SimpleMessage::init(uint16_t msgType, uint8_t versionMajor, uint8_t version
   LOG_COMM("SimpleMessage::init(type: %d, comm: %d, reply: %d, data[%d]...)",
             msgType, commType, replyCode, data.getBufferSize());
   this->setMessageType(msgType);
+  this->message_string_ = "";
   this->setVersionMajor(versionMajor);
   this->setVersionMinor(versionMinor);
   this->setCommType(commType);
   this->setReplyCode(replyCode);
+  this->setSequence(0);
+  this->setTimeStamp(0, 0);
   this->data_.copyFrom(data);
+  this->payload_length_ = this->data_.getBufferSize();
 
   return this->validateMessage();
 }
