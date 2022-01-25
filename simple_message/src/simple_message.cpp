@@ -130,7 +130,9 @@ void SimpleMessage::toByteArray(ByteArray & msg)
 
   msg.load((uint32_t)this->data_.getBufferSize());
   msg.load((uint16_t)this->getMessageType());
-  msg.load((void *)this->message_string_.c_str(), MESSAGE_STRING_LENGTH * sizeof(char));
+  // msg.load((void *)this->message_string_.c_str(), MESSAGE_STRING_LENGTH * sizeof(char));
+  for(int i = 0; i < MESSAGE_STRING_LENGTH; i++)
+    msg.load((uint8_t)0);
   msg.load((uint8_t)this->getVersionMajor());
   msg.load((uint8_t)this->getVersionMinor());
   msg.load((uint16_t)this->getSequence());
