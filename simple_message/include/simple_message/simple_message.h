@@ -169,6 +169,7 @@ public:
    * \brief Constructs an empty message
    */
 	SimpleMessage();
+  friend std::ostream& operator<<(std::ostream& os, const SimpleMessage& dt);
 
   /**
    * \brief Destructs a message
@@ -374,6 +375,8 @@ private:
    */
   void setReplyCode(uint8_t replyCode) {this->reply_code_ = replyCode;};
 };
+
+std::ostream& operator<<(std::ostream& os, const SimpleMessage& msg);
 
 }//namespace simple_message
 }//namespace industrial
