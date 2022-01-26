@@ -63,7 +63,7 @@ namespace industrial
           rc = rawSendBytes(&localBuffer[0], localBuffer.size());
           if (this->SOCKET_FAIL != rc)
           {
-            LOG_COMM("sendBytes() sent %d bytes", rc);
+            ROS_INFO("sendBytes() sent %d bytes", rc);
             rtn = true;
           }
           else

@@ -71,6 +71,7 @@ bool SmplMsgConnection::sendMsg(SimpleMessage & message)
     //Attach the end tag to the end of the byte array
     for(int i = 0; i < message.END_TAG.size(); i++)
       sendBuffer.load((void *)&message.END_TAG[i], sizeof(char));
+    ROS_INFO_STREAM("Sending message: "<< std::endl << message);
     rtn = this->sendBytes(sendBuffer);
   }
   else
