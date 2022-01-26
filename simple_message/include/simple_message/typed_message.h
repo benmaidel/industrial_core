@@ -129,6 +129,7 @@ public:
         industrial::simple_message::CommTypes::TOPIC,
         industrial::simple_message::ReplyTypes::INVALID, data);
   }
+
   /**
    * \brief gets message type (enumeration)
    *
@@ -147,16 +148,6 @@ public:
   int getCommType() const
   {
     return comm_type_;
-  }
-
-  uint8_t getVersionMajor() const
-  {
-    return version_major_;
-  }
-
-  uint8_t getVersionMinor() const
-  {
-    return version_minor_;
   }
 
 protected:
@@ -181,15 +172,11 @@ protected:
     this->comm_type_ = comm_type;
   }
 
-  void setVersionMajor(int version_major)
-  {
-    this->version_major_ = version_major;
-  }
+  virtual uint8_t getVersionMajor()=0;
+  virtual uint8_t getVersionMinor()=0;
 
-  void setVersionMinor(int version_minor)
-  {
-    this->version_minor_ = version_minor;
-  }
+  static const uint8_t version_major_;
+  static const uint8_t version_minor_;
 
 private:
 
@@ -203,10 +190,6 @@ private:
    * \brief Communications type (see simple_message::CommTypes::CommType)
    */
   uint8_t comm_type_;
-
-  uint8_t version_major_;
-
-  uint8_t version_minor_;
 
 };
 
