@@ -113,7 +113,7 @@ bool SmplMsgConnection::receiveMsg(SimpleMessage &message)
       rtn = message.init(headerBuffer);
       if (rtn)
       {
-        ROS_DEBUG_STREAM("received header: " <<std::endl << message);
+        ROS_INFO_STREAM("received header: " <<std::endl << message);
         if(message.getPayloadLength() > 0)
         {
           rtn = this->receiveBytes(msgBuffer, message.getPayloadLength());
