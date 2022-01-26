@@ -56,32 +56,32 @@ namespace StandardMsgTypes
 {
   enum StandardMsgType
   {
- INVALID = 0,
- PING = 1,
+    INVALID = 0,
+    PING = 1,
 
- //TODO: Keeping these message type for the time being.  Refactoring
- // the messages should remove the need for this message.
- JOINT_POSITION = 10,
- JOINT = 10,
- READ_INPUT = 20,
- WRITE_OUTPUT = 21,
+    //TODO: Keeping these message type for the time being.  Refactoring
+    // the messages should remove the need for this message.
+    JOINT_POSITION = 10,
+    JOINT = 10,
+    READ_INPUT = 20,
+    WRITE_OUTPUT = 21,
 
- JOINT_TRAJ_PT = 11,  //Joint trajectory point message (typically for streaming)
- JOINT_TRAJ = 12,	  //Joint trajectory message (typically for trajectory downloading)
- STATUS = 13,         //Robot status message (for reporting the robot state)
- JOINT_TRAJ_PT_FULL = 14,  // Joint trajectory point message (all message fields)
- JOINT_FEEDBACK = 15,      // Feedback of joint pos/vel/accel
+    JOINT_TRAJ_PT = 11,  //Joint trajectory point message (typically for streaming)
+    JOINT_TRAJ = 12,	  //Joint trajectory message (typically for trajectory downloading)
+    STATUS = 13,         //Robot status message (for reporting the robot state)
+    JOINT_TRAJ_PT_FULL = 14,  // Joint trajectory point message (all message fields)
+    JOINT_FEEDBACK = 15,      // Feedback of joint pos/vel/accel
 
- // Begin vendor specific message types (only define the beginning enum value,
- // specific enum values should be defined locally, within in the range reserved
- // here.  Each vendor can reserve up 100 types
+    // Begin vendor specific message types (only define the beginning enum value,
+    // specific enum values should be defined locally, within in the range reserved
+    // here.  Each vendor can reserve up 100 types
 
- SWRI_MSG_BEGIN     = 1000,
- UR_MSG_BEGIN       = 1100,
- ADEPT_MSG_BEGIN    = 1200,
- ABB_MSG_BEGIN      = 1300,
- FANUC_MSG_BEGIN    = 1400,
- MOTOMAN_MSG_BEGIN  = 2000
+    SWRI_MSG_BEGIN     = 1000,
+    UR_MSG_BEGIN       = 1100,
+    ADEPT_MSG_BEGIN    = 1200,
+    ABB_MSG_BEGIN      = 1300,
+    FANUC_MSG_BEGIN    = 1400,
+    MOTOMAN_MSG_BEGIN  = 2000
   };
 }
 typedef StandardMsgTypes::StandardMsgType StandardMsgType;
@@ -93,10 +93,10 @@ namespace CommTypes
 {
   enum CommType
   {
- INVALID = 0,
- TOPIC = 1,
- SERVICE_REQUEST = 2,
- SERVICE_REPLY = 3
+    INVALID = 0,
+    TOPIC = 1,
+    SERVICE_REQUEST = 2,
+    SERVICE_REPLY = 3
   };
 }
 typedef CommTypes::CommType CommType;
@@ -109,9 +109,9 @@ namespace ReplyTypes
 {
   enum ReplyType
   {
- INVALID = 0,
- SUCCESS = 1,
- FAILURE = 2
+    INVALID = 0,
+    SUCCESS = 1,
+    FAILURE = 2
   };
 }
 typedef ReplyTypes::ReplyType ReplyType;
