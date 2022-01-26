@@ -218,6 +218,7 @@ protected:
    * \brief internal data buffer for receiving
    */
   char buffer_[MAX_BUFFER_SIZE + 1];
+  std::vector<char> buffer_vector_;
 
   int  getSockHandle() const
   {

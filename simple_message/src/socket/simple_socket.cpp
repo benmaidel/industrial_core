@@ -51,10 +51,10 @@ namespace industrial
 
       if (this->isConnected())
       {
-        // Nothing restricts the ByteArray from being larger than the what the socket
-        // can handle.
-        if (this->MAX_BUFFER_SIZE > (int)buffer.getBufferSize())
-        {
+        // // Nothing restricts the ByteArray from being larger than the what the socket
+        // // can handle.
+        // if (this->MAX_BUFFER_SIZE > (int)buffer.getBufferSize())
+        // {
 
           // copy to local array, since ByteArray no longer supports
           // direct pointer-access to data values
@@ -63,6 +63,7 @@ namespace industrial
           rc = rawSendBytes(&localBuffer[0], localBuffer.size());
           if (this->SOCKET_FAIL != rc)
           {
+            LOG_COMM("sendBytes() sent %d bytes", rc);
             rtn = true;
           }
           else
@@ -71,12 +72,12 @@ namespace industrial
             logSocketError("Socket sendBytes failed", rc, errno);
           }
 
-        }
-        else
-        {
-          LOG_ERROR("Buffer size: %u, is greater than max socket size: %u", buffer.getBufferSize(), this->MAX_BUFFER_SIZE);
-          rtn = false;
-        }
+        // }
+        // else
+        // {
+        //   LOG_ERROR("Buffer size: %u, is greater than max socket size: %u", buffer.getBufferSize(), this->MAX_BUFFER_SIZE);
+        //   rtn = false;
+        // }
 
       }
       else
@@ -105,20 +106,24 @@ namespace industrial
       // ensure that we don't read any of the garbage that may be left over from
       // a previous read), but it is good practice.
 
-      memset(&this->buffer_, 0, sizeof(this->buffer_));
+      // memset(&this->buffer_, 0, sizeof(this->buffer_));
 
       // Doing a sanity check to determine if the byte array buffer is smaller than
       // what can be received by the socket.
-      if (this->MAX_BUFFER_SIZE > buffer.getMaxBufferSize())
-      {
-        LOG_WARN("Socket buffer max size: %u, is larger than byte array buffer: %u",
-            this->MAX_BUFFER_SIZE, buffer.getMaxBufferSize());
-      }
+      // if (this->MAX_BUFFER_SIZE > buffer.getMaxBufferSize())
+      // {
+      //   LOG_WARN("Socket buffer max size: %u, is larger than byte array buffer: %u",
+      //       this->MAX_BUFFER_SIZE, buffer.getMaxBufferSize());
+      // }
+
       if (this->isConnected())
       {
         buffer.init();
         while (remainBytes > 0)
         {
+          // resize the receive buffer to the num_bytes that are left.
+          this->buffer_vector_.resize(num_bytes, 0);
+
           // Polling the socket results in an "interruptable" socket read.  This
           // allows Control-C to break out of a socket read.  Without polling,
           // a sig-term is required to kill a program in a socket read function.
@@ -126,7 +131,7 @@ namespace industrial
           {
             if(ready)
             {
-              rc = rawReceiveBytes(this->buffer_, remainBytes);
+              rc = rawReceiveBytes(&this->buffer_vector_[0], remainBytes);
               if (this->SOCKET_FAIL == rc)
               {
                 this->logSocketError("Socket received failed", rc, errno);
@@ -146,7 +151,7 @@ namespace industrial
                 remainBytes = remainBytes - rc;
                 LOG_COMM("Byte array receive, bytes read: %u, bytes reqd: %u, bytes left: %u",
                     rc, num_bytes, remainBytes);
-                buffer.load(&this->buffer_, rc);
+                buffer.load(&this->buffer_vector_[0], rc);
                 rtn = true;
               }
             }
