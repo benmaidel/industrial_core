@@ -73,7 +73,7 @@ bool SimpleMessage::init(uint16_t msgType, uint8_t versionMajor, uint8_t version
   LOG_COMM("SimpleMessage::init(type: %d, comm: %d, reply: %d, data[%d]...)",
             msgType, commType, replyCode, data.getBufferSize());
   this->setMessageType(msgType);
-  this->message_string_ = "";
+  memset(&this->message_string_, 0, MESSAGE_STRING_LENGTH);
   this->setVersionMajor(versionMajor);
   this->setVersionMinor(versionMinor);
   this->setCommType(commType);
@@ -97,7 +97,7 @@ bool SimpleMessage::init(ByteArray & msg)
     LOG_COMM("Unloading header data");
     msg.unloadFront(this->payload_length_);
     msg.unloadFront(this->message_type_);
-    msg.unloadFront((void *)this->message_string_.c_str(), MESSAGE_STRING_LENGTH * sizeof(char));
+    msg.unloadFront(&this->message_string_, MESSAGE_STRING_LENGTH * sizeof(char));
     msg.unloadFront(this->version_major_);
     msg.unloadFront(this->version_minor_);
     msg.unloadFront(this->sequence_);
@@ -130,9 +130,7 @@ void SimpleMessage::toByteArray(ByteArray & msg)
 
   msg.load((uint32_t)this->data_.getBufferSize());
   msg.load((uint16_t)this->getMessageType());
-  // msg.load((void *)this->message_string_.c_str(), MESSAGE_STRING_LENGTH * sizeof(char));
-  for(int i = 0; i < MESSAGE_STRING_LENGTH; i++)
-    msg.load((uint8_t)0);
+  msg.load(&this->message_string_, MESSAGE_STRING_LENGTH * sizeof(char));
   msg.load((uint8_t)this->getVersionMajor());
   msg.load((uint8_t)this->getVersionMinor());
   msg.load((uint16_t)this->getSequence());
@@ -187,7 +185,7 @@ std::ostream& operator<<(std::ostream& os, const SimpleMessage& msg)
 {
     os << "payload_length: " << (int)msg.payload_length_ << "\n";
     os << "message_type: " << (int)msg.message_type_ << "\n";
-    os << "message_string: " << msg.message_string_ << "\n";
+    os << "message_string: " << std::string(msg.message_string_) << "\n";
     os << "version_major: " << (int)msg.version_major_ << "\n";
     os << "version_minor: " << (int)msg.version_minor_ << "\n";
     os << "seq: " << (int)msg.sequence_ << "\n";

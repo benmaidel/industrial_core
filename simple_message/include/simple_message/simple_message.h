@@ -204,7 +204,7 @@ public:
    *
    * \return message type
    */
-	std::string getMessageString() {return this->message_string_;};
+	std::string getMessageString() {return std::string(this->message_string_);};
 
 
   /**
@@ -305,7 +305,8 @@ private:
   uint16_t message_type_;
 
   static const uint32_t MESSAGE_STRING_LENGTH = 10;
-  std::string message_string_;
+  // std::string message_string_;
+  char message_string_[MESSAGE_STRING_LENGTH];
 
   uint8_t version_major_;
 
