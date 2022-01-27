@@ -52,6 +52,8 @@ namespace joint_message
 
 JointMessage::JointMessage(void)
 {
+  this->version_major_ = 0;
+  this->version_minor_ = 1;
   this->setMessageType(StandardMsgTypes::JOINT_POSITION);
   this->init();
 }

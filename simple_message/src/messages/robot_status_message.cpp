@@ -52,6 +52,8 @@ namespace robot_status_message
 
 RobotStatusMessage::RobotStatusMessage(void)
 {
+  this->version_major_ = 0;
+  this->version_minor_ = 1;
   this->init();
 }
 

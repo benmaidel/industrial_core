@@ -52,6 +52,8 @@ namespace joint_traj_pt_full_message
 
 JointTrajPtFullMessage::JointTrajPtFullMessage(void)
 {
+  this->version_major_ = 0;
+  this->version_minor_ = 1;
   this->init();
 }
 

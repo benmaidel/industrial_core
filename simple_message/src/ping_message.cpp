@@ -1,5 +1,5 @@
 /*
-* Software License Agreement (BSD License) 
+* Software License Agreement (BSD License)
 *
 * Copyright (c) 2011, Southwest Research Institute
 * All rights reserved.
@@ -12,7 +12,7 @@
 * 	* Redistributions in binary form must reproduce the above copyright
 * 	notice, this list of conditions and the following disclaimer in the
 * 	documentation and/or other materials provided with the distribution.
-* 	* Neither the name of the Southwest Research Institute, nor the names 
+* 	* Neither the name of the Southwest Research Institute, nor the names
 *	of its contributors may be used to endorse or promote products derived
 *	from this software without specific prior written permission.
 *
@@ -27,7 +27,7 @@
 * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 * POSSIBILITY OF SUCH DAMAGE.
-*/ 
+*/
 #ifndef FLATHEADERS
 #include "simple_message/ping_message.h"
 #include "simple_message/log_wrapper.h"
@@ -49,6 +49,8 @@ namespace ping_message
 
 PingMessage::PingMessage(void)
 {
+  this->version_major_ = 0;
+  this->version_minor_ = 1;
   this->init();
 }
 
