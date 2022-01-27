@@ -287,6 +287,10 @@ public:
    */
   void setData(industrial::byte_array::ByteArray &data);
 
+  void setSequence(uint16_t sequence) {this->sequence_ = sequence;};
+
+  void setTimeStamp(uint32_t sec, uint32_t nsec) {this->timestamp_sec_ = sec; this->timestamp_nsec_ = nsec;};
+
   /**
    * \brief performs logical checks to ensure that the message is fully
    * defined and adheres to the message conventions.
@@ -357,10 +361,6 @@ private:
   void setVersionMajor(uint8_t versionMajor) {this->version_major_ = versionMajor;};
 
   void setVersionMinor(uint8_t versionMinor) {this->version_minor_ = versionMinor;};
-
-  void setSequence(uint16_t sequence) {this->sequence_ = sequence;};
-
-  void setTimeStamp(uint32_t sec, uint32_t nsec) {this->timestamp_sec_ = sec; this->timestamp_nsec_ = nsec;};
 
   /**
    * \brief Sets communications type
