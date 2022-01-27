@@ -139,32 +139,39 @@ void MessageManager::spinOnce()
     this->getCommsFaultHandler()->connectionFailCB();
   }
 
-  if (this->getConnection()->receiveMsg(msg))
+  if (this->getConnection()->isReadyReceive(10))
   {
-    LOG_COMM("Message received");
-    handler = this->getHandler(msg.getMessageType());
-
-    if (NULL != handler)
+    if (this->getConnection()->receiveMsg(msg))
     {
-      LOG_DEBUG("Executing handler callback for message type: %d", handler->getMsgType());
-      handler->callback(msg);
+      LOG_INFO("Message received");
+      handler = this->getHandler(msg.getMessageType());
+
+      if (NULL != handler)
+      {
+        LOG_DEBUG("Executing handler callback for message type: %d", handler->getMsgType());
+        handler->callback(msg);
+      }
+      else
+      {
+        if (CommTypes::SERVICE_REQUEST == msg.getCommType())
+        {
+          simple_message::SimpleMessage fail;
+          fail.init(msg.getMessageType(), 0, 0, CommTypes::SERVICE_REPLY, ReplyTypes::FAILURE);
+          this->getConnection()->sendMsg(fail);
+          LOG_WARN("Unhandled message type encounters, sending failure reply");
+        }
+        LOG_ERROR("Message callback for message type: %d, not executed", msg.getMessageType());
+      }
     }
     else
     {
-      if (CommTypes::SERVICE_REQUEST == msg.getCommType())
-      {
-        simple_message::SimpleMessage fail;
-        fail.init(msg.getMessageType(), 0, 0, CommTypes::SERVICE_REPLY, ReplyTypes::FAILURE);
-        this->getConnection()->sendMsg(fail);
-        LOG_WARN("Unhandled message type encounters, sending failure reply");
-      }
-      LOG_ERROR("Message callback for message type: %d, not executed", msg.getMessageType());
+      LOG_ERROR("Failed to receive incoming message");
+      this->getCommsFaultHandler()->sendFailCB();
     }
   }
   else
   {
-    LOG_ERROR("Failed to receive incoming message");
-    this->getCommsFaultHandler()->sendFailCB();
+    ROS_INFO("Nothing to read on socket");
   }
 }
 
