@@ -172,11 +172,17 @@ protected:
     this->comm_type_ = comm_type;
   }
 
-  virtual uint8_t getVersionMajor()=0;
-  virtual uint8_t getVersionMinor()=0;
+  uint8_t getVersionMajor() const
+  {
+    return version_major_;
+  }
+  uint8_t getVersionMinor() const
+  {
+    return version_minor_;
+  }
 
-  static const uint8_t version_major_;
-  static const uint8_t version_minor_;
+  uint8_t version_major_;
+  uint8_t version_minor_;
 
 private:
 
