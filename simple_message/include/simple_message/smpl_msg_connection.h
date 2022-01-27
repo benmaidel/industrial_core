@@ -95,6 +95,8 @@ public:
                          industrial::simple_message::SimpleMessage & recv,
                          bool verbose = false);
 
+  virtual bool isReadyReceive(int timeout)=0;
+
   /**
    * \brief return connection status
    *
