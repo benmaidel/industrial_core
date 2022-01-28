@@ -171,7 +171,7 @@ void MessageManager::spinOnce()
   }
   else
   {
-    ROS_INFO("Nothing to read on socket");
+    ROS_DEBUG("Nothing to read on socket");
   }
 }
 
