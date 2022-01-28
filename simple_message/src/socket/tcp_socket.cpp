@@ -109,7 +109,8 @@ bool TcpSocket::rawPoll(int timeout, bool & ready, bool & error)
       }
       else if(FD_ISSET(this->getSockHandle(), &except)) {
         error = true;
-        rtn = true;
+        rtn = false;
+        this->logSocketError("Socket select set except flag", rc, errno);
       }
       else {
         LOG_WARN("Select returned, but no flags are set");
