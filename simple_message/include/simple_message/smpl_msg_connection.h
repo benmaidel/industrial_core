@@ -72,6 +72,15 @@ public:
    */
   virtual bool sendMsg(industrial::simple_message::SimpleMessage & message);
 
+    /**
+   * \brief Sends a message using the data connection
+   *
+   * \param message to send
+   *
+   * \return true if successful
+   */
+  virtual bool sendMsgs(std::vector<industrial::simple_message::SimpleMessage> & messages);
+
   /**
    * \brief Receives a message using the data connection
    *

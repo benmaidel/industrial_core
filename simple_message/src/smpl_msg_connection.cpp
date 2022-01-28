@@ -52,7 +52,40 @@ namespace industrial
 namespace smpl_msg_connection
 {
 
+bool SmplMsgConnection::sendMsgs(std::vector<SimpleMessage> & messages)
+{
+  bool rtn;
+  ByteArray sendBuffer;
+  ByteArray msgData;
 
+  sendBuffer.init();
+  for(int i = 0; i < messages.size(); i++)
+  {
+    msgData.init();
+    if (messages[i].validateMessage())
+    {
+      ROS_INFO_STREAM("Loading message: "<< std::endl << messages[i]);
+      //Load the start tag to the byte array
+      for(int j = 0; j < messages[i].START_TAG.size(); j++)
+        sendBuffer.load((void *)&messages[i].START_TAG[j], sizeof(char));
+
+      messages[i].toByteArray(msgData);
+      sendBuffer.load(msgData);
+
+      //Attach the end tag to the end of the byte array
+      for(int j = 0; j < messages[i].END_TAG.size(); j++)
+        sendBuffer.load((void *)&messages[i].END_TAG[j], sizeof(char));
+    }
+    else
+    {
+      rtn = false;
+      LOG_ERROR("Message validation failed, message not sent");
+    }
+  }
+  if (sendBuffer.getBufferSize() > 0)
+    rtn = this->sendBytes(sendBuffer);
+  return rtn;
+}
 bool SmplMsgConnection::sendMsg(SimpleMessage & message)
 {
   bool rtn;
@@ -114,7 +147,7 @@ bool SmplMsgConnection::receiveMsg(SimpleMessage &message)
       rtn = message.init(headerBuffer);
       if (rtn)
       {
-        ROS_DEBUG_STREAM("received header: " <<std::endl << message);
+        ROS_INFO_STREAM("received header: " <<std::endl << message);
         if(message.getPayloadLength() > 0)
         {
           rtn = this->receiveBytes(msgBuffer, message.getPayloadLength());
