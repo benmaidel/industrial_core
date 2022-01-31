@@ -64,7 +64,7 @@ bool SmplMsgConnection::sendMsgs(std::vector<SimpleMessage> & messages)
     msgData.init();
     if (messages[i].validateMessage())
     {
-      ROS_INFO_STREAM("Loading message: "<< std::endl << messages[i]);
+      ROS_DEBUG_STREAM("Loading message: "<< std::endl << messages[i]);
       //Load the start tag to the byte array
       for(int j = 0; j < messages[i].START_TAG.size(); j++)
         sendBuffer.load((void *)&messages[i].START_TAG[j], sizeof(char));
@@ -147,7 +147,7 @@ bool SmplMsgConnection::receiveMsg(SimpleMessage &message)
       rtn = message.init(headerBuffer);
       if (rtn)
       {
-        ROS_INFO_STREAM("received header: " <<std::endl << message);
+        ROS_DEBUG_STREAM("received header: " <<std::endl << message);
         if(message.getPayloadLength() > 0)
         {
           rtn = this->receiveBytes(msgBuffer, message.getPayloadLength());
